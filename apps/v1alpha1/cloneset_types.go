@@ -64,6 +64,11 @@ type CloneSetSpec struct {
 	// consists of all revisions not represented by a currently applied
 	// CloneSetSpec version. The default value is 10.
 	RevisionHistoryLimit *int32 `json:"revisionHistoryLimit,omitempty"`
+
+	// Minimum number of seconds for which a newly created pod should be ready
+	// without any of its container crashing, for it to be considered available.
+	// Defaults to 0 (pod will be considered available as soon as it is ready)
+	MinReadySeconds int32 `json:"minReadySeconds,omitempty"`
 }
 
 // CloneSetScaleStrategy defines strategies for pods scale.
@@ -99,7 +104,7 @@ type CloneSetUpdateStrategy struct {
 	// - If scatterStrategy is used, we suggest to just use one term. Otherwise, the update order can be hard to understand.
 	ScatterStrategy CloneSetUpdateScatterStrategy `json:"scatterStrategy,omitempty"`
 	// InPlaceUpdateStrategy contains strategies for in-place update.
-	InPlaceUpdateStrategy *CloneSetInPlaceUpdateStrategy `json:"inPlaceUpdateStrategy,omitempty"`
+	InPlaceUpdateStrategy *InPlaceUpdateStrategy `json:"inPlaceUpdateStrategy,omitempty"`
 }
 
 // CloneSetUpdateStrategyType defines strategies for pods in-place update.
@@ -134,10 +139,6 @@ type CloneSetUpdateScatterTerm struct {
 	Value string `json:"value"`
 }
 
-// CloneSetInPlaceUpdateStrategy defines the strategies for in-place update.
-type CloneSetInPlaceUpdateStrategy struct {
-}
-
 // CloneSetStatus defines the observed state of CloneSet
 type CloneSetStatus struct {
 	// ObservedGeneration is the most recent generation observed for this CloneSet. It corresponds to the
@@ -149,6 +150,9 @@ type CloneSetStatus struct {
 
 	// ReadyReplicas is the number of Pods created by the CloneSet controller that have a Ready Condition.
 	ReadyReplicas int32 `json:"readyReplicas"`
+
+	// AvailableReplicas is the number of Pods created by the CloneSet controller that have a Ready Condition for at least minReadySeconds.
+	AvailableReplicas int32 `json:"availableReplicas"`
 
 	// UpdatedReplicas is the number of Pods created by the CloneSet controller from the CloneSet version
 	// indicated by updateRevision.
@@ -168,6 +172,9 @@ type CloneSetStatus struct {
 
 	// Conditions represents the latest available observations of a CloneSet's current state.
 	Conditions []CloneSetCondition `json:"conditions,omitempty"`
+
+	// LabelSelector is label selectors for query over pods that should match the replica count used by HPA.
+	LabelSelector string `json:"labelSelector,omitempty"`
 }
 
 // CloneSetConditionType is type for CloneSet conditions.
