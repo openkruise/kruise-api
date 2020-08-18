@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The Kruise Authors.
+Copyright 2020 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ type SidecarSetSpec struct {
 
 // SidecarContainer defines the container of Sidecar
 type SidecarContainer struct {
-	corev1.Container
+	corev1.Container `json:",inline"`
 }
 
 // SidecarSetUpdateStrategy indicates the strategy that the SidecarSet
@@ -74,16 +74,16 @@ type SidecarSetStatus struct {
 }
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +genclient:nonNamespaced
-
-// SidecarSet is the Schema for the sidecarsets API
-// +k8s:openapi-gen=true
+// +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Cluster
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="MATCHED",type="integer",JSONPath=".status.matchedPods",description="The number of pods matched."
 // +kubebuilder:printcolumn:name="UPDATED",type="integer",JSONPath=".status.updatedPods",description="The number of pods matched and updated."
 // +kubebuilder:printcolumn:name="READY",type="integer",JSONPath=".status.readyPods",description="The number of pods matched and ready."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC."
+
+// SidecarSet is the Schema for the sidecarsets API
 type SidecarSet struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -92,8 +92,7 @@ type SidecarSet struct {
 	Status SidecarSetStatus `json:"status,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// +genclient:nonNamespaced
+// +kubebuilder:object:root=true
 
 // SidecarSetList contains a list of SidecarSet
 type SidecarSetList struct {

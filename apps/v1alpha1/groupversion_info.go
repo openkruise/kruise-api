@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The Kruise Authors.
+Copyright 2020 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,40 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// NOTE: Boilerplate only.  Ignore this file.
-
 // Package v1alpha1 contains API Schema definitions for the apps v1alpha1 API group
-// +k8s:openapi-gen=true
-// +k8s:deepcopy-gen=package,register
-// +k8s:conversion-gen=github.com/openkruise/kruise/pkg/apis/apps
-// +k8s:defaulter-gen=TypeMeta
+// +kubebuilder:object:generate=true
 // +groupName=apps.kruise.io
 package v1alpha1
 
 import (
-	"github.com/openkruise/kruise-api/utils/scheme"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"github.com/openkruise/kruise-api/utils/scheme"
 )
 
 var (
-	// SchemeGroupVersion is group version used to register these objects
-	SchemeGroupVersion = schema.GroupVersion{Group: "apps.kruise.io", Version: "v1alpha1"}
+	// GroupVersion is group version used to register these objects
+	GroupVersion = schema.GroupVersion{Group: "apps.kruise.io", Version: "v1alpha1"}
+
+	SchemeGroupVersion = GroupVersion
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
-	SchemeBuilder = &scheme.Builder{GroupVersion: SchemeGroupVersion}
+	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}
 
-	// AddToScheme is required by pkg/client/...
+	// AddToScheme adds the types in this group-version to the given scheme.
 	AddToScheme = SchemeBuilder.AddToScheme
 )
 
 // Resource is required by pkg/client/listers/...
 func Resource(resource string) schema.GroupResource {
 	return SchemeGroupVersion.WithResource(resource).GroupResource()
-}
-
-func init() {
-	// We only register manually written functions here. The registration of the
-	// generated functions takes place in the generated files. The separation
-	// makes the code compile even when the generated files are missing.
-	SchemeBuilder.SchemeBuilder.Register()
 }

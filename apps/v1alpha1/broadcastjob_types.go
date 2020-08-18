@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The Kruise Authors.
+Copyright 2020 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -208,17 +208,16 @@ type JobCondition struct {
 }
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// BroadcastJob is the Schema for the broadcastjobs API
-// +k8s:openapi-gen=true
+// +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:shortName=bj
+// +kubebuilder:resource:shortName=bcj
 // +kubebuilder:printcolumn:name="Desired",type="integer",JSONPath=".status.desired",description="The desired number of pods. This is typically equal to the number of nodes satisfied to run pods."
 // +kubebuilder:printcolumn:name="Active",type="integer",JSONPath=".status.active",description="The number of actively running pods."
 // +kubebuilder:printcolumn:name="Succeeded",type="integer",JSONPath=".status.succeeded",description="The number of pods which reached phase Succeeded."
 // +kubebuilder:printcolumn:name="Failed",type="integer",JSONPath=".status.failed",description="The number of pods which reached phase Failed."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC."
+
+// BroadcastJob is the Schema for the broadcastjobs API
 type BroadcastJob struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -227,7 +226,7 @@ type BroadcastJob struct {
 	Status BroadcastJobStatus `json:"status,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
 
 // BroadcastJobList contains a list of BroadcastJob
 type BroadcastJobList struct {
