@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The Kruise Authors.
+Copyright 2020 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -89,7 +89,8 @@ type CloneSetUpdateStrategy struct {
 	Partition *int32 `json:"partition,omitempty"`
 	// The maximum number of pods that can be unavailable during the update.
 	// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
-	// Absolute number is calculated from percentage by rounding up.
+	// Absolute number is calculated from percentage by rounding up by default.
+	// When maxSurge > 0, absolute number is calculated from percentage by rounding down.
 	// Defaults to 20%.
 	MaxUnavailable *intstr.IntOrString `json:"maxUnavailable,omitempty"`
 	// The maximum number of pods that can be scheduled above the desired replicas during the update.
@@ -207,10 +208,7 @@ type CloneSetCondition struct {
 }
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// CloneSet is the Schema for the clonesets API
-// +k8s:openapi-gen=true
+// +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector
 // +kubebuilder:resource:shortName=clone
@@ -220,6 +218,8 @@ type CloneSetCondition struct {
 // +kubebuilder:printcolumn:name="READY",type="integer",JSONPath=".status.readyReplicas",description="The number of pods ready."
 // +kubebuilder:printcolumn:name="TOTAL",type="integer",JSONPath=".status.replicas",description="The number of currently all pods."
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp",description="CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC."
+
+// CloneSet is the Schema for the clonesets API
 type CloneSet struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -228,7 +228,7 @@ type CloneSet struct {
 	Status CloneSetStatus `json:"status,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
 
 // CloneSetList contains a list of CloneSet
 type CloneSetList struct {
