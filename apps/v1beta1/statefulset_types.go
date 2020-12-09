@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package v1beta1
 
 import (
 	appspub "github.com/openkruise/kruise-api/apps/pub"
@@ -168,6 +168,15 @@ type StatefulSetSpec struct {
 	// consists of all revisions not represented by a currently applied
 	// StatefulSetSpec version. The default value is 10.
 	RevisionHistoryLimit *int32 `json:"revisionHistoryLimit,omitempty"`
+
+	// reserveOrdinals controls the ordinal numbers that should be reserved, and the replicas
+	// will always be the expectation number of running Pods.
+	// For a sts with replicas=3 and its Pods in [0, 1, 2]:
+	// - If you want to migrate Pod-1 and reserve this ordinal, just set spec.reserveOrdinal to [1].
+	//   Then controller will delete Pod-1 and create Pod-3 (existing Pods will be [0, 2, 3])
+	// - If you just want to delete Pod-1, you should set spec.reserveOrdinal to [1] and spec.replicas to 2.
+	//   Then controller will delete Pod-1 (existing Pods will be [0, 2])
+	ReserveOrdinals []int `json:"reserveOrdinals,omitempty"`
 }
 
 // StatefulSetStatus defines the observed state of StatefulSet
@@ -230,6 +239,7 @@ const (
 // +kubebuilder:subresource:status
 // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector
 // +kubebuilder:resource:shortName=sts;asts
+// +kubebuilder:storageversion
 // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector
 // +kubebuilder:printcolumn:name="DESIRED",type="integer",JSONPath=".spec.replicas",description="The desired number of pods."
 // +kubebuilder:printcolumn:name="CURRENT",type="integer",JSONPath=".status.replicas",description="The number of currently all pods."

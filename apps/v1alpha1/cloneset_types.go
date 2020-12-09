@@ -17,6 +17,9 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"fmt"
+
+	appspub "github.com/openkruise/kruise-api/apps/pub"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -37,7 +40,7 @@ type CloneSetSpec struct {
 	// These are replicas in the sense that they are instantiations of the
 	// same Template.
 	// If unspecified, defaults to 1.
-	Replicas *int32 `json:"replicas"`
+	Replicas *int32 `json:"replicas,omitempty"`
 
 	// Selector is a label query over pods that should match the replica count.
 	// It must match the pod template's labels.
@@ -71,7 +74,7 @@ type CloneSetSpec struct {
 	MinReadySeconds int32 `json:"minReadySeconds,omitempty"`
 
 	// Lifecycle defines the lifecycle hooks for Pods pre-delete, in-place update.
-	Lifecycle *Lifecycle `json:"lifecycle,omitempty"`
+	Lifecycle *appspub.Lifecycle `json:"lifecycle,omitempty"`
 }
 
 // CloneSetScaleStrategy defines strategies for pods scale.
@@ -86,10 +89,12 @@ type CloneSetUpdateStrategy struct {
 	// Type indicates the type of the CloneSetUpdateStrategy.
 	// Default is ReCreate.
 	Type CloneSetUpdateStrategyType `json:"type,omitempty"`
-	// Partition is the desired number of pods in old revisions. It means when partition
-	// is set during pods updating, (replicas - partition) number of pods will be updated.
+	// Partition is the desired number of pods in old revisions.
+	// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+	// Absolute number is calculated from percentage by rounding up by default.
+	// It means when partition is set during pods updating, (replicas - partition value) number of pods will be updated.
 	// Default value is 0.
-	Partition *int32 `json:"partition,omitempty"`
+	Partition *intstr.IntOrString `json:"partition,omitempty"`
 	// The maximum number of pods that can be unavailable during the update.
 	// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
 	// Absolute number is calculated from percentage by rounding up by default.
@@ -106,14 +111,14 @@ type CloneSetUpdateStrategy struct {
 	Paused bool `json:"paused,omitempty"`
 	// Priorities are the rules for calculating the priority of updating pods.
 	// Each pod to be updated, will pass through these terms and get a sum of weights.
-	PriorityStrategy *UpdatePriorityStrategy `json:"priorityStrategy,omitempty"`
+	PriorityStrategy *appspub.UpdatePriorityStrategy `json:"priorityStrategy,omitempty"`
 	// ScatterStrategy defines the scatter rules to make pods been scattered when update.
 	// This will avoid pods with the same key-value to be updated in one batch.
 	// - Note that pods will be scattered after priority sort. So, although priority strategy and scatter strategy can be applied together, we suggest to use either one of them.
 	// - If scatterStrategy is used, we suggest to just use one term. Otherwise, the update order can be hard to understand.
 	ScatterStrategy CloneSetUpdateScatterStrategy `json:"scatterStrategy,omitempty"`
 	// InPlaceUpdateStrategy contains strategies for in-place update.
-	InPlaceUpdateStrategy *InPlaceUpdateStrategy `json:"inPlaceUpdateStrategy,omitempty"`
+	InPlaceUpdateStrategy *appspub.InPlaceUpdateStrategy `json:"inPlaceUpdateStrategy,omitempty"`
 }
 
 // CloneSetUpdateStrategyType defines strategies for pods in-place update.
@@ -146,6 +151,28 @@ type CloneSetUpdateScatterStrategy []CloneSetUpdateScatterTerm
 type CloneSetUpdateScatterTerm struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
+}
+
+// FieldsValidation checks invalid fields in CloneSetUpdateScatterStrategy.
+func (strategy CloneSetUpdateScatterStrategy) FieldsValidation() error {
+	if len(strategy) == 0 {
+		return nil
+	}
+
+	m := make(map[string]struct{}, len(strategy))
+	for _, term := range strategy {
+		if term.Key == "" {
+			return fmt.Errorf("key should not be empty")
+		}
+		id := term.Key + ":" + term.Value
+		if _, ok := m[id]; !ok {
+			m[id] = struct{}{}
+		} else {
+			return fmt.Errorf("duplicated key=%v value=%v", term.Key, term.Value)
+		}
+	}
+
+	return nil
 }
 
 // CloneSetStatus defines the observed state of CloneSet
