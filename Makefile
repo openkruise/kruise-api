@@ -12,6 +12,7 @@ vet:
 # Generate code
 generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
+	@hack/generate_client.sh
 
 # find or download controller-gen
 # download controller-gen if necessary
