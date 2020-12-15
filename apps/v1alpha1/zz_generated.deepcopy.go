@@ -61,7 +61,7 @@ func (in *AdvancedCronJob) DeepCopyObject() runtime.Object {
 func (in *AdvancedCronJobList) DeepCopyInto(out *AdvancedCronJobList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]AdvancedCronJob, len(*in))
@@ -197,7 +197,7 @@ func (in *BroadcastJob) DeepCopyObject() runtime.Object {
 func (in *BroadcastJobList) DeepCopyInto(out *BroadcastJobList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]BroadcastJob, len(*in))
@@ -342,7 +342,7 @@ func (in *CloneSetCondition) DeepCopy() *CloneSetCondition {
 func (in *CloneSetList) DeepCopyInto(out *CloneSetList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]CloneSet, len(*in))
@@ -655,7 +655,7 @@ func (in *DaemonSetCondition) DeepCopy() *DaemonSetCondition {
 func (in *DaemonSetList) DeepCopyInto(out *DaemonSetList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]DaemonSet, len(*in))
@@ -963,7 +963,7 @@ func (in *SidecarSet) DeepCopyObject() runtime.Object {
 func (in *SidecarSetList) DeepCopyInto(out *SidecarSetList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]SidecarSet, len(*in))
@@ -1099,7 +1099,7 @@ func (in *StatefulSet) DeepCopyObject() runtime.Object {
 func (in *StatefulSetList) DeepCopyInto(out *StatefulSetList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]StatefulSet, len(*in))
@@ -1357,7 +1357,7 @@ func (in *UnitedDeploymentCondition) DeepCopy() *UnitedDeploymentCondition {
 func (in *UnitedDeploymentList) DeepCopyInto(out *UnitedDeploymentList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]UnitedDeployment, len(*in))
