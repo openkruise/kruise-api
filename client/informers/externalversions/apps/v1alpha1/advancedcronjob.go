@@ -19,6 +19,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
 	time "time"
 
 	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
@@ -61,13 +62,13 @@ func NewFilteredAdvancedCronJobInformer(client versioned.Interface, namespace st
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().AdvancedCronJobs(namespace).List(options)
+				return client.AppsV1alpha1().AdvancedCronJobs(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().AdvancedCronJobs(namespace).Watch(options)
+				return client.AppsV1alpha1().AdvancedCronJobs(namespace).Watch(context.TODO(), options)
 			},
 		},
 		&appsv1alpha1.AdvancedCronJob{},
