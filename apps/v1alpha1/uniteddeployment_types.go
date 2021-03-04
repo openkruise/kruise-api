@@ -90,6 +90,10 @@ type SubsetTemplate struct {
 	// CloneSet template
 	// +optional
 	CloneSetTemplate *CloneSetTemplateSpec `json:"cloneSetTemplate,omitempty"`
+
+	// Deployment template
+	// +optional
+	DeploymentTemplate *DeploymentTemplateSpec `json:"deploymentTemplate,omitempty"`
 }
 
 // StatefulSetTemplateSpec defines the subset template of StatefulSet.
@@ -106,10 +110,17 @@ type AdvancedStatefulSetTemplateSpec struct {
 	Spec              StatefulSetSpec `json:"spec"`
 }
 
+// CloneSetTemplateSpec defines the subset template of CloneSet.
 type CloneSetTemplateSpec struct {
 	// +kubebuilder:validation:XPreserveUnknownFields
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 	Spec              CloneSetSpec `json:"spec"`
+}
+
+// DeploymentTemplateSpec defines the subset template of Deployment.
+type DeploymentTemplateSpec struct {
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+	Spec              appsv1.DeploymentSpec `json:"spec"`
 }
 
 // UnitedDeploymentUpdateStrategy defines the update performance
@@ -243,6 +254,7 @@ type UpdateStatus struct {
 // +genclient
 // +genclient:method=GetScale,verb=get,subresource=scale,result=k8s.io/api/autoscaling/v1.Scale
 // +genclient:method=UpdateScale,verb=update,subresource=scale,input=k8s.io/api/autoscaling/v1.Scale,result=k8s.io/api/autoscaling/v1.Scale
+// +k8s:openapi-gen=true
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.selector

@@ -32,6 +32,10 @@ type Interface interface {
 	CloneSets() CloneSetInformer
 	// DaemonSets returns a DaemonSetInformer.
 	DaemonSets() DaemonSetInformer
+	// ImagePullJobs returns a ImagePullJobInformer.
+	ImagePullJobs() ImagePullJobInformer
+	// NodeImages returns a NodeImageInformer.
+	NodeImages() NodeImageInformer
 	// SidecarSets returns a SidecarSetInformer.
 	SidecarSets() SidecarSetInformer
 	// StatefulSets returns a StatefulSetInformer.
@@ -69,6 +73,16 @@ func (v *version) CloneSets() CloneSetInformer {
 // DaemonSets returns a DaemonSetInformer.
 func (v *version) DaemonSets() DaemonSetInformer {
 	return &daemonSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// ImagePullJobs returns a ImagePullJobInformer.
+func (v *version) ImagePullJobs() ImagePullJobInformer {
+	return &imagePullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// NodeImages returns a NodeImageInformer.
+func (v *version) NodeImages() NodeImageInformer {
+	return &nodeImageInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // SidecarSets returns a SidecarSetInformer.

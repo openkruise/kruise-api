@@ -26,6 +26,10 @@ type CloneSetExpansion interface{}
 
 type DaemonSetExpansion interface{}
 
+type ImagePullJobExpansion interface{}
+
+type NodeImageExpansion interface{}
+
 type SidecarSetExpansion interface{}
 
 type StatefulSetExpansion interface{}
