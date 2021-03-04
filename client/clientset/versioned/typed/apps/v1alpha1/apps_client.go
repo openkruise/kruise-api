@@ -30,6 +30,8 @@ type AppsV1alpha1Interface interface {
 	BroadcastJobsGetter
 	CloneSetsGetter
 	DaemonSetsGetter
+	ImagePullJobsGetter
+	NodeImagesGetter
 	SidecarSetsGetter
 	StatefulSetsGetter
 	UnitedDeploymentsGetter
@@ -54,6 +56,14 @@ func (c *AppsV1alpha1Client) CloneSets(namespace string) CloneSetInterface {
 
 func (c *AppsV1alpha1Client) DaemonSets(namespace string) DaemonSetInterface {
 	return newDaemonSets(c, namespace)
+}
+
+func (c *AppsV1alpha1Client) ImagePullJobs(namespace string) ImagePullJobInterface {
+	return newImagePullJobs(c, namespace)
+}
+
+func (c *AppsV1alpha1Client) NodeImages() NodeImageInterface {
+	return newNodeImages(c)
 }
 
 func (c *AppsV1alpha1Client) SidecarSets() SidecarSetInterface {

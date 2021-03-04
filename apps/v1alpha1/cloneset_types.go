@@ -17,8 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"fmt"
-
 	appspub "github.com/openkruise/kruise-api/apps/pub"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -116,7 +114,7 @@ type CloneSetUpdateStrategy struct {
 	// This will avoid pods with the same key-value to be updated in one batch.
 	// - Note that pods will be scattered after priority sort. So, although priority strategy and scatter strategy can be applied together, we suggest to use either one of them.
 	// - If scatterStrategy is used, we suggest to just use one term. Otherwise, the update order can be hard to understand.
-	ScatterStrategy CloneSetUpdateScatterStrategy `json:"scatterStrategy,omitempty"`
+	ScatterStrategy UpdateScatterStrategy `json:"scatterStrategy,omitempty"`
 	// InPlaceUpdateStrategy contains strategies for in-place update.
 	InPlaceUpdateStrategy *appspub.InPlaceUpdateStrategy `json:"inPlaceUpdateStrategy,omitempty"`
 }
@@ -137,43 +135,6 @@ const (
 	// rejected by kube-apiserver
 	InPlaceOnlyCloneSetUpdateStrategyType CloneSetUpdateStrategyType = "InPlaceOnly"
 )
-
-// CloneSetUpdateScatterStrategy defines a map for label key-value. Pods matches the key-value will be scattered when update.
-//
-// Example1: [{"Key": "labelA", "Value": "AAA"}]
-// It means all pods with label labelA=AAA will be scattered when update.
-//
-// Example2: [{"Key": "labelA", "Value": "AAA"}, {"Key": "labelB", "Value": "BBB"}]
-// Controller will calculate the two sums of pods with labelA=AAA and with labelB=BBB,
-// pods with the label that has bigger amount will be scattered first, then pods with the other label will be scattered.
-type CloneSetUpdateScatterStrategy []CloneSetUpdateScatterTerm
-
-type CloneSetUpdateScatterTerm struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-// FieldsValidation checks invalid fields in CloneSetUpdateScatterStrategy.
-func (strategy CloneSetUpdateScatterStrategy) FieldsValidation() error {
-	if len(strategy) == 0 {
-		return nil
-	}
-
-	m := make(map[string]struct{}, len(strategy))
-	for _, term := range strategy {
-		if term.Key == "" {
-			return fmt.Errorf("key should not be empty")
-		}
-		id := term.Key + ":" + term.Value
-		if _, ok := m[id]; !ok {
-			m[id] = struct{}{}
-		} else {
-			return fmt.Errorf("duplicated key=%v value=%v", term.Key, term.Value)
-		}
-	}
-
-	return nil
-}
 
 // CloneSetStatus defines the observed state of CloneSet
 type CloneSetStatus struct {
@@ -200,6 +161,9 @@ type CloneSetStatus struct {
 
 	// UpdateRevision, if not empty, indicates the latest revision of the CloneSet.
 	UpdateRevision string `json:"updateRevision,omitempty"`
+
+	// currentRevision, if not empty, indicates the current revision version of the CloneSet.
+	CurrentRevision string `json:"currentRevision,omitempty"`
 
 	// CollisionCount is the count of hash collisions for the CloneSet. The CloneSet controller
 	// uses this field as a collision avoidance mechanism when it needs to create the name for the
@@ -240,6 +204,7 @@ type CloneSetCondition struct {
 // +genclient
 // +genclient:method=GetScale,verb=get,subresource=scale,result=k8s.io/api/autoscaling/v1.Scale
 // +genclient:method=UpdateScale,verb=update,subresource=scale,input=k8s.io/api/autoscaling/v1.Scale,result=k8s.io/api/autoscaling/v1.Scale
+// +k8s:openapi-gen=true
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas,selectorpath=.status.labelSelector

@@ -44,6 +44,14 @@ func (c *FakeAppsV1alpha1) DaemonSets(namespace string) v1alpha1.DaemonSetInterf
 	return &FakeDaemonSets{c, namespace}
 }
 
+func (c *FakeAppsV1alpha1) ImagePullJobs(namespace string) v1alpha1.ImagePullJobInterface {
+	return &FakeImagePullJobs{c, namespace}
+}
+
+func (c *FakeAppsV1alpha1) NodeImages() v1alpha1.NodeImageInterface {
+	return &FakeNodeImages{c}
+}
+
 func (c *FakeAppsV1alpha1) SidecarSets() v1alpha1.SidecarSetInterface {
 	return &FakeSidecarSets{c}
 }
