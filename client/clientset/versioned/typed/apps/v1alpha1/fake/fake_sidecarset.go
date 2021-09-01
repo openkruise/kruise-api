@@ -19,8 +19,6 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
@@ -40,7 +38,7 @@ var sidecarsetsResource = schema.GroupVersionResource{Group: "apps.kruise.io", V
 var sidecarsetsKind = schema.GroupVersionKind{Group: "apps.kruise.io", Version: "v1alpha1", Kind: "SidecarSet"}
 
 // Get takes name of the sidecarSet, and returns the corresponding sidecarSet object, and an error if there is any.
-func (c *FakeSidecarSets) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.SidecarSet, err error) {
+func (c *FakeSidecarSets) Get(name string, options v1.GetOptions) (result *v1alpha1.SidecarSet, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootGetAction(sidecarsetsResource, name), &v1alpha1.SidecarSet{})
 	if obj == nil {
@@ -50,7 +48,7 @@ func (c *FakeSidecarSets) Get(ctx context.Context, name string, options v1.GetOp
 }
 
 // List takes label and field selectors, and returns the list of SidecarSets that match those selectors.
-func (c *FakeSidecarSets) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.SidecarSetList, err error) {
+func (c *FakeSidecarSets) List(opts v1.ListOptions) (result *v1alpha1.SidecarSetList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootListAction(sidecarsetsResource, sidecarsetsKind, opts), &v1alpha1.SidecarSetList{})
 	if obj == nil {
@@ -71,13 +69,13 @@ func (c *FakeSidecarSets) List(ctx context.Context, opts v1.ListOptions) (result
 }
 
 // Watch returns a watch.Interface that watches the requested sidecarSets.
-func (c *FakeSidecarSets) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeSidecarSets) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewRootWatchAction(sidecarsetsResource, opts))
 }
 
 // Create takes the representation of a sidecarSet and creates it.  Returns the server's representation of the sidecarSet, and an error, if there is any.
-func (c *FakeSidecarSets) Create(ctx context.Context, sidecarSet *v1alpha1.SidecarSet, opts v1.CreateOptions) (result *v1alpha1.SidecarSet, err error) {
+func (c *FakeSidecarSets) Create(sidecarSet *v1alpha1.SidecarSet) (result *v1alpha1.SidecarSet, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootCreateAction(sidecarsetsResource, sidecarSet), &v1alpha1.SidecarSet{})
 	if obj == nil {
@@ -87,7 +85,7 @@ func (c *FakeSidecarSets) Create(ctx context.Context, sidecarSet *v1alpha1.Sidec
 }
 
 // Update takes the representation of a sidecarSet and updates it. Returns the server's representation of the sidecarSet, and an error, if there is any.
-func (c *FakeSidecarSets) Update(ctx context.Context, sidecarSet *v1alpha1.SidecarSet, opts v1.UpdateOptions) (result *v1alpha1.SidecarSet, err error) {
+func (c *FakeSidecarSets) Update(sidecarSet *v1alpha1.SidecarSet) (result *v1alpha1.SidecarSet, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateAction(sidecarsetsResource, sidecarSet), &v1alpha1.SidecarSet{})
 	if obj == nil {
@@ -98,7 +96,7 @@ func (c *FakeSidecarSets) Update(ctx context.Context, sidecarSet *v1alpha1.Sidec
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeSidecarSets) UpdateStatus(ctx context.Context, sidecarSet *v1alpha1.SidecarSet, opts v1.UpdateOptions) (*v1alpha1.SidecarSet, error) {
+func (c *FakeSidecarSets) UpdateStatus(sidecarSet *v1alpha1.SidecarSet) (*v1alpha1.SidecarSet, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateSubresourceAction(sidecarsetsResource, "status", sidecarSet), &v1alpha1.SidecarSet{})
 	if obj == nil {
@@ -108,22 +106,22 @@ func (c *FakeSidecarSets) UpdateStatus(ctx context.Context, sidecarSet *v1alpha1
 }
 
 // Delete takes name of the sidecarSet and deletes it. Returns an error if one occurs.
-func (c *FakeSidecarSets) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeSidecarSets) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewRootDeleteAction(sidecarsetsResource, name), &v1alpha1.SidecarSet{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeSidecarSets) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewRootDeleteCollectionAction(sidecarsetsResource, listOpts)
+func (c *FakeSidecarSets) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+	action := testing.NewRootDeleteCollectionAction(sidecarsetsResource, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.SidecarSetList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched sidecarSet.
-func (c *FakeSidecarSets) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.SidecarSet, err error) {
+func (c *FakeSidecarSets) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.SidecarSet, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootPatchSubresourceAction(sidecarsetsResource, name, pt, data, subresources...), &v1alpha1.SidecarSet{})
 	if obj == nil {
