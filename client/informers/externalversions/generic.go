@@ -23,6 +23,7 @@ import (
 
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
+	policyv1alpha1 "github.com/openkruise/kruise-api/policy/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -74,10 +75,16 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().StatefulSets().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("uniteddeployments"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().UnitedDeployments().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("workloadspreads"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().WorkloadSpreads().Informer()}, nil
 
 		// Group=apps.kruise.io, Version=v1beta1
 	case v1beta1.SchemeGroupVersion.WithResource("statefulsets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().StatefulSets().Informer()}, nil
+
+		// Group=policy.kruise.io, Version=v1alpha1
+	case policyv1alpha1.SchemeGroupVersion.WithResource("podunavailablebudgets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Policy().V1alpha1().PodUnavailableBudgets().Informer()}, nil
 
 	}
 
