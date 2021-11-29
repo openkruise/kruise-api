@@ -19,7 +19,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	"time"
 
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
@@ -38,15 +37,15 @@ type NodeImagesGetter interface {
 
 // NodeImageInterface has methods to work with NodeImage resources.
 type NodeImageInterface interface {
-	Create(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.CreateOptions) (*v1alpha1.NodeImage, error)
-	Update(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (*v1alpha1.NodeImage, error)
-	UpdateStatus(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (*v1alpha1.NodeImage, error)
-	Delete(ctx context.Context, name string, opts v1.DeleteOptions) error
-	DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error
-	Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.NodeImage, error)
-	List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.NodeImageList, error)
-	Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error)
-	Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodeImage, err error)
+	Create(*v1alpha1.NodeImage) (*v1alpha1.NodeImage, error)
+	Update(*v1alpha1.NodeImage) (*v1alpha1.NodeImage, error)
+	UpdateStatus(*v1alpha1.NodeImage) (*v1alpha1.NodeImage, error)
+	Delete(name string, options *v1.DeleteOptions) error
+	DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error
+	Get(name string, options v1.GetOptions) (*v1alpha1.NodeImage, error)
+	List(opts v1.ListOptions) (*v1alpha1.NodeImageList, error)
+	Watch(opts v1.ListOptions) (watch.Interface, error)
+	Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.NodeImage, err error)
 	NodeImageExpansion
 }
 
@@ -63,19 +62,19 @@ func newNodeImages(c *AppsV1alpha1Client) *nodeImages {
 }
 
 // Get takes name of the nodeImage, and returns the corresponding nodeImage object, and an error if there is any.
-func (c *nodeImages) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *nodeImages) Get(name string, options v1.GetOptions) (result *v1alpha1.NodeImage, err error) {
 	result = &v1alpha1.NodeImage{}
 	err = c.client.Get().
 		Resource("nodeimages").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // List takes label and field selectors, and returns the list of NodeImages that match those selectors.
-func (c *nodeImages) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.NodeImageList, err error) {
+func (c *nodeImages) List(opts v1.ListOptions) (result *v1alpha1.NodeImageList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -85,13 +84,13 @@ func (c *nodeImages) List(ctx context.Context, opts v1.ListOptions) (result *v1a
 		Resource("nodeimages").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Watch returns a watch.Interface that watches the requested nodeImages.
-func (c *nodeImages) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *nodeImages) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -101,84 +100,81 @@ func (c *nodeImages) Watch(ctx context.Context, opts v1.ListOptions) (watch.Inte
 		Resource("nodeimages").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
-		Watch(ctx)
+		Watch()
 }
 
 // Create takes the representation of a nodeImage and creates it.  Returns the server's representation of the nodeImage, and an error, if there is any.
-func (c *nodeImages) Create(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.CreateOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *nodeImages) Create(nodeImage *v1alpha1.NodeImage) (result *v1alpha1.NodeImage, err error) {
 	result = &v1alpha1.NodeImage{}
 	err = c.client.Post().
 		Resource("nodeimages").
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(nodeImage).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Update takes the representation of a nodeImage and updates it. Returns the server's representation of the nodeImage, and an error, if there is any.
-func (c *nodeImages) Update(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *nodeImages) Update(nodeImage *v1alpha1.NodeImage) (result *v1alpha1.NodeImage, err error) {
 	result = &v1alpha1.NodeImage{}
 	err = c.client.Put().
 		Resource("nodeimages").
 		Name(nodeImage.Name).
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(nodeImage).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *nodeImages) UpdateStatus(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (result *v1alpha1.NodeImage, err error) {
+
+func (c *nodeImages) UpdateStatus(nodeImage *v1alpha1.NodeImage) (result *v1alpha1.NodeImage, err error) {
 	result = &v1alpha1.NodeImage{}
 	err = c.client.Put().
 		Resource("nodeimages").
 		Name(nodeImage.Name).
 		SubResource("status").
-		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(nodeImage).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }
 
 // Delete takes name of the nodeImage and deletes it. Returns an error if one occurs.
-func (c *nodeImages) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *nodeImages) Delete(name string, options *v1.DeleteOptions) error {
 	return c.client.Delete().
 		Resource("nodeimages").
 		Name(name).
-		Body(&opts).
-		Do(ctx).
+		Body(options).
+		Do().
 		Error()
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *nodeImages) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *nodeImages) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
 	var timeout time.Duration
-	if listOpts.TimeoutSeconds != nil {
-		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
+	if listOptions.TimeoutSeconds != nil {
+		timeout = time.Duration(*listOptions.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Resource("nodeimages").
-		VersionedParams(&listOpts, scheme.ParameterCodec).
+		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Timeout(timeout).
-		Body(&opts).
-		Do(ctx).
+		Body(options).
+		Do().
 		Error()
 }
 
 // Patch applies the patch and returns the patched nodeImage.
-func (c *nodeImages) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodeImage, err error) {
+func (c *nodeImages) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.NodeImage, err error) {
 	result = &v1alpha1.NodeImage{}
 	err = c.client.Patch(pt).
 		Resource("nodeimages").
-		Name(name).
 		SubResource(subresources...).
-		VersionedParams(&opts, scheme.ParameterCodec).
+		Name(name).
 		Body(data).
-		Do(ctx).
+		Do().
 		Into(result)
 	return
 }

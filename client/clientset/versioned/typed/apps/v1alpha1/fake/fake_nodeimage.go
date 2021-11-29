@@ -19,8 +19,6 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
@@ -40,7 +38,7 @@ var nodeimagesResource = schema.GroupVersionResource{Group: "apps.kruise.io", Ve
 var nodeimagesKind = schema.GroupVersionKind{Group: "apps.kruise.io", Version: "v1alpha1", Kind: "NodeImage"}
 
 // Get takes name of the nodeImage, and returns the corresponding nodeImage object, and an error if there is any.
-func (c *FakeNodeImages) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *FakeNodeImages) Get(name string, options v1.GetOptions) (result *v1alpha1.NodeImage, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootGetAction(nodeimagesResource, name), &v1alpha1.NodeImage{})
 	if obj == nil {
@@ -50,7 +48,7 @@ func (c *FakeNodeImages) Get(ctx context.Context, name string, options v1.GetOpt
 }
 
 // List takes label and field selectors, and returns the list of NodeImages that match those selectors.
-func (c *FakeNodeImages) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.NodeImageList, err error) {
+func (c *FakeNodeImages) List(opts v1.ListOptions) (result *v1alpha1.NodeImageList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootListAction(nodeimagesResource, nodeimagesKind, opts), &v1alpha1.NodeImageList{})
 	if obj == nil {
@@ -71,13 +69,13 @@ func (c *FakeNodeImages) List(ctx context.Context, opts v1.ListOptions) (result 
 }
 
 // Watch returns a watch.Interface that watches the requested nodeImages.
-func (c *FakeNodeImages) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeNodeImages) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewRootWatchAction(nodeimagesResource, opts))
 }
 
 // Create takes the representation of a nodeImage and creates it.  Returns the server's representation of the nodeImage, and an error, if there is any.
-func (c *FakeNodeImages) Create(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.CreateOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *FakeNodeImages) Create(nodeImage *v1alpha1.NodeImage) (result *v1alpha1.NodeImage, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootCreateAction(nodeimagesResource, nodeImage), &v1alpha1.NodeImage{})
 	if obj == nil {
@@ -87,7 +85,7 @@ func (c *FakeNodeImages) Create(ctx context.Context, nodeImage *v1alpha1.NodeIma
 }
 
 // Update takes the representation of a nodeImage and updates it. Returns the server's representation of the nodeImage, and an error, if there is any.
-func (c *FakeNodeImages) Update(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (result *v1alpha1.NodeImage, err error) {
+func (c *FakeNodeImages) Update(nodeImage *v1alpha1.NodeImage) (result *v1alpha1.NodeImage, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateAction(nodeimagesResource, nodeImage), &v1alpha1.NodeImage{})
 	if obj == nil {
@@ -98,7 +96,7 @@ func (c *FakeNodeImages) Update(ctx context.Context, nodeImage *v1alpha1.NodeIma
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeNodeImages) UpdateStatus(ctx context.Context, nodeImage *v1alpha1.NodeImage, opts v1.UpdateOptions) (*v1alpha1.NodeImage, error) {
+func (c *FakeNodeImages) UpdateStatus(nodeImage *v1alpha1.NodeImage) (*v1alpha1.NodeImage, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootUpdateSubresourceAction(nodeimagesResource, "status", nodeImage), &v1alpha1.NodeImage{})
 	if obj == nil {
@@ -108,22 +106,22 @@ func (c *FakeNodeImages) UpdateStatus(ctx context.Context, nodeImage *v1alpha1.N
 }
 
 // Delete takes name of the nodeImage and deletes it. Returns an error if one occurs.
-func (c *FakeNodeImages) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeNodeImages) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewRootDeleteAction(nodeimagesResource, name), &v1alpha1.NodeImage{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeNodeImages) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewRootDeleteCollectionAction(nodeimagesResource, listOpts)
+func (c *FakeNodeImages) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+	action := testing.NewRootDeleteCollectionAction(nodeimagesResource, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.NodeImageList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched nodeImage.
-func (c *FakeNodeImages) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NodeImage, err error) {
+func (c *FakeNodeImages) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.NodeImage, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewRootPatchSubresourceAction(nodeimagesResource, name, pt, data, subresources...), &v1alpha1.NodeImage{})
 	if obj == nil {

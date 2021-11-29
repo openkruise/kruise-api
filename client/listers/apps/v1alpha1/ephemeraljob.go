@@ -26,10 +26,8 @@ import (
 )
 
 // EphemeralJobLister helps list EphemeralJobs.
-// All objects returned here must be treated as read-only.
 type EphemeralJobLister interface {
 	// List lists all EphemeralJobs in the indexer.
-	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.EphemeralJob, err error)
 	// EphemeralJobs returns an object that can list and get EphemeralJobs.
 	EphemeralJobs(namespace string) EphemeralJobNamespaceLister
@@ -60,13 +58,10 @@ func (s *ephemeralJobLister) EphemeralJobs(namespace string) EphemeralJobNamespa
 }
 
 // EphemeralJobNamespaceLister helps list and get EphemeralJobs.
-// All objects returned here must be treated as read-only.
 type EphemeralJobNamespaceLister interface {
 	// List lists all EphemeralJobs in the indexer for a given namespace.
-	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.EphemeralJob, err error)
 	// Get retrieves the EphemeralJob from the indexer for a given namespace and name.
-	// Objects returned here must be treated as read-only.
 	Get(name string) (*v1alpha1.EphemeralJob, error)
 	EphemeralJobNamespaceListerExpansion
 }

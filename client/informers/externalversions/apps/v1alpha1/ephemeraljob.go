@@ -19,7 +19,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	time "time"
 
 	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
@@ -62,13 +61,13 @@ func NewFilteredEphemeralJobInformer(client versioned.Interface, namespace strin
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().EphemeralJobs(namespace).List(context.TODO(), options)
+				return client.AppsV1alpha1().EphemeralJobs(namespace).List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().EphemeralJobs(namespace).Watch(context.TODO(), options)
+				return client.AppsV1alpha1().EphemeralJobs(namespace).Watch(options)
 			},
 		},
 		&appsv1alpha1.EphemeralJob{},
