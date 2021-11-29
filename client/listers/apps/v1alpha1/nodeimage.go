@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,10 +26,13 @@ import (
 )
 
 // NodeImageLister helps list NodeImages.
+// All objects returned here must be treated as read-only.
 type NodeImageLister interface {
 	// List lists all NodeImages in the indexer.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.NodeImage, err error)
 	// Get retrieves the NodeImage from the index for a given name.
+	// Objects returned here must be treated as read-only.
 	Get(name string) (*v1alpha1.NodeImage, error)
 	NodeImageListerExpansion
 }

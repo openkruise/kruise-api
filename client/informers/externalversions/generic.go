@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -65,10 +65,14 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ContainerRecreateRequests().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("daemonsets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().DaemonSets().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("ephemeraljobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().EphemeralJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("imagepulljobs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ImagePullJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("nodeimages"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().NodeImages().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("resourcedistributions"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ResourceDistributions().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("sidecarsets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().SidecarSets().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("statefulsets"):

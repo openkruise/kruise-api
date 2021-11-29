@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,8 +31,10 @@ type AppsV1alpha1Interface interface {
 	CloneSetsGetter
 	ContainerRecreateRequestsGetter
 	DaemonSetsGetter
+	EphemeralJobsGetter
 	ImagePullJobsGetter
 	NodeImagesGetter
+	ResourceDistributionsGetter
 	SidecarSetsGetter
 	StatefulSetsGetter
 	UnitedDeploymentsGetter
@@ -64,12 +66,20 @@ func (c *AppsV1alpha1Client) DaemonSets(namespace string) DaemonSetInterface {
 	return newDaemonSets(c, namespace)
 }
 
+func (c *AppsV1alpha1Client) EphemeralJobs(namespace string) EphemeralJobInterface {
+	return newEphemeralJobs(c, namespace)
+}
+
 func (c *AppsV1alpha1Client) ImagePullJobs(namespace string) ImagePullJobInterface {
 	return newImagePullJobs(c, namespace)
 }
 
 func (c *AppsV1alpha1Client) NodeImages() NodeImageInterface {
 	return newNodeImages(c)
+}
+
+func (c *AppsV1alpha1Client) ResourceDistributions() ResourceDistributionInterface {
+	return newResourceDistributions(c)
 }
 
 func (c *AppsV1alpha1Client) SidecarSets() SidecarSetInterface {

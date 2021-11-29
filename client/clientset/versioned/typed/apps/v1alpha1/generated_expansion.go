@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,9 +28,13 @@ type ContainerRecreateRequestExpansion interface{}
 
 type DaemonSetExpansion interface{}
 
+type EphemeralJobExpansion interface{}
+
 type ImagePullJobExpansion interface{}
 
 type NodeImageExpansion interface{}
+
+type ResourceDistributionExpansion interface{}
 
 type SidecarSetExpansion interface{}
 

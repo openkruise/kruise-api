@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ import (
 )
 
 // DaemonSetLister helps list DaemonSets.
+// All objects returned here must be treated as read-only.
 type DaemonSetLister interface {
 	// List lists all DaemonSets in the indexer.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.DaemonSet, err error)
 	// DaemonSets returns an object that can list and get DaemonSets.
 	DaemonSets(namespace string) DaemonSetNamespaceLister
@@ -58,10 +60,13 @@ func (s *daemonSetLister) DaemonSets(namespace string) DaemonSetNamespaceLister 
 }
 
 // DaemonSetNamespaceLister helps list and get DaemonSets.
+// All objects returned here must be treated as read-only.
 type DaemonSetNamespaceLister interface {
 	// List lists all DaemonSets in the indexer for a given namespace.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.DaemonSet, err error)
 	// Get retrieves the DaemonSet from the indexer for a given namespace and name.
+	// Objects returned here must be treated as read-only.
 	Get(name string) (*v1alpha1.DaemonSet, error)
 	DaemonSetNamespaceListerExpansion
 }

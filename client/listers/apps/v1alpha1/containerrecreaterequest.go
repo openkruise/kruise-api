@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ import (
 )
 
 // ContainerRecreateRequestLister helps list ContainerRecreateRequests.
+// All objects returned here must be treated as read-only.
 type ContainerRecreateRequestLister interface {
 	// List lists all ContainerRecreateRequests in the indexer.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.ContainerRecreateRequest, err error)
 	// ContainerRecreateRequests returns an object that can list and get ContainerRecreateRequests.
 	ContainerRecreateRequests(namespace string) ContainerRecreateRequestNamespaceLister
@@ -58,10 +60,13 @@ func (s *containerRecreateRequestLister) ContainerRecreateRequests(namespace str
 }
 
 // ContainerRecreateRequestNamespaceLister helps list and get ContainerRecreateRequests.
+// All objects returned here must be treated as read-only.
 type ContainerRecreateRequestNamespaceLister interface {
 	// List lists all ContainerRecreateRequests in the indexer for a given namespace.
+	// Objects returned here must be treated as read-only.
 	List(selector labels.Selector) (ret []*v1alpha1.ContainerRecreateRequest, err error)
 	// Get retrieves the ContainerRecreateRequest from the indexer for a given namespace and name.
+	// Objects returned here must be treated as read-only.
 	Get(name string) (*v1alpha1.ContainerRecreateRequest, error)
 	ContainerRecreateRequestNamespaceListerExpansion
 }

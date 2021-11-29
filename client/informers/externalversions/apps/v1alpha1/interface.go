@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,10 +34,14 @@ type Interface interface {
 	ContainerRecreateRequests() ContainerRecreateRequestInformer
 	// DaemonSets returns a DaemonSetInformer.
 	DaemonSets() DaemonSetInformer
+	// EphemeralJobs returns a EphemeralJobInformer.
+	EphemeralJobs() EphemeralJobInformer
 	// ImagePullJobs returns a ImagePullJobInformer.
 	ImagePullJobs() ImagePullJobInformer
 	// NodeImages returns a NodeImageInformer.
 	NodeImages() NodeImageInformer
+	// ResourceDistributions returns a ResourceDistributionInformer.
+	ResourceDistributions() ResourceDistributionInformer
 	// SidecarSets returns a SidecarSetInformer.
 	SidecarSets() SidecarSetInformer
 	// StatefulSets returns a StatefulSetInformer.
@@ -84,6 +88,11 @@ func (v *version) DaemonSets() DaemonSetInformer {
 	return &daemonSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
+// EphemeralJobs returns a EphemeralJobInformer.
+func (v *version) EphemeralJobs() EphemeralJobInformer {
+	return &ephemeralJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
 // ImagePullJobs returns a ImagePullJobInformer.
 func (v *version) ImagePullJobs() ImagePullJobInformer {
 	return &imagePullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
@@ -92,6 +101,11 @@ func (v *version) ImagePullJobs() ImagePullJobInformer {
 // NodeImages returns a NodeImageInformer.
 func (v *version) NodeImages() NodeImageInformer {
 	return &nodeImageInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+}
+
+// ResourceDistributions returns a ResourceDistributionInformer.
+func (v *version) ResourceDistributions() ResourceDistributionInformer {
+	return &resourceDistributionInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // SidecarSets returns a SidecarSetInformer.

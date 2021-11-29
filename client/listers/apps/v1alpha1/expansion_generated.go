@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -58,6 +58,14 @@ type DaemonSetListerExpansion interface{}
 // DaemonSetNamespaceLister.
 type DaemonSetNamespaceListerExpansion interface{}
 
+// EphemeralJobListerExpansion allows custom methods to be added to
+// EphemeralJobLister.
+type EphemeralJobListerExpansion interface{}
+
+// EphemeralJobNamespaceListerExpansion allows custom methods to be added to
+// EphemeralJobNamespaceLister.
+type EphemeralJobNamespaceListerExpansion interface{}
+
 // ImagePullJobListerExpansion allows custom methods to be added to
 // ImagePullJobLister.
 type ImagePullJobListerExpansion interface{}
@@ -69,6 +77,10 @@ type ImagePullJobNamespaceListerExpansion interface{}
 // NodeImageListerExpansion allows custom methods to be added to
 // NodeImageLister.
 type NodeImageListerExpansion interface{}
+
+// ResourceDistributionListerExpansion allows custom methods to be added to
+// ResourceDistributionLister.
+type ResourceDistributionListerExpansion interface{}
 
 // SidecarSetListerExpansion allows custom methods to be added to
 // SidecarSetLister.

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 The Kruise Authors.
+Copyright 2021 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,12 +48,20 @@ func (c *FakeAppsV1alpha1) DaemonSets(namespace string) v1alpha1.DaemonSetInterf
 	return &FakeDaemonSets{c, namespace}
 }
 
+func (c *FakeAppsV1alpha1) EphemeralJobs(namespace string) v1alpha1.EphemeralJobInterface {
+	return &FakeEphemeralJobs{c, namespace}
+}
+
 func (c *FakeAppsV1alpha1) ImagePullJobs(namespace string) v1alpha1.ImagePullJobInterface {
 	return &FakeImagePullJobs{c, namespace}
 }
 
 func (c *FakeAppsV1alpha1) NodeImages() v1alpha1.NodeImageInterface {
 	return &FakeNodeImages{c}
+}
+
+func (c *FakeAppsV1alpha1) ResourceDistributions() v1alpha1.ResourceDistributionInterface {
+	return &FakeResourceDistributions{c}
 }
 
 func (c *FakeAppsV1alpha1) SidecarSets() v1alpha1.SidecarSetInterface {
