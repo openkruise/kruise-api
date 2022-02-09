@@ -10,10 +10,10 @@ We recommend using the go types in this repo. You may serialize them directly to
 
 ## Compatibility matrix
 
-| Kubernetes Version in your Project | Import Kruise-api < v0.10    | Import Kruise-api >= v0.10   |
-| ---------------------------------- | ---------------------------- | ---------------------------- | 
-| < 1.18                             | v0.x.y (x <= 9)              | v0.x.y-legacy (x >= 10)      |
-| >= 1.18                            | v0.x.y-1.18 (7 <= x <= 9)    | v0.x.y (x >= 10)             |
+| Kubernetes Version in your Project | Import Kruise-api < v0.10  | Import Kruise-api >= v0.10 |
+|------------------------------------|----------------------------|----------------------------|
+| < 1.18                             | v0.x.y (x <= 9)            | v0.x.y-legacy (x >= 10)    |
+| >= 1.18                            | v0.x.y-1.18 (7 <= x <= 9)  | v0.x.y (x >= 10)           |
 
 ## Where does it come from?
 
