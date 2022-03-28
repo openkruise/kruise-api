@@ -19,7 +19,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
 	time "time"
 
 	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
@@ -61,13 +60,13 @@ func NewFilteredSidecarSetInformer(client versioned.Interface, resyncPeriod time
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().SidecarSets().List(context.TODO(), options)
+				return client.AppsV1alpha1().SidecarSets().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().SidecarSets().Watch(context.TODO(), options)
+				return client.AppsV1alpha1().SidecarSets().Watch(options)
 			},
 		},
 		&appsv1alpha1.SidecarSet{},

@@ -19,8 +19,6 @@ limitations under the License.
 package fake
 
 import (
-	"context"
-
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
@@ -41,7 +39,7 @@ var imagepulljobsResource = schema.GroupVersionResource{Group: "apps.kruise.io",
 var imagepulljobsKind = schema.GroupVersionKind{Group: "apps.kruise.io", Version: "v1alpha1", Kind: "ImagePullJob"}
 
 // Get takes name of the imagePullJob, and returns the corresponding imagePullJob object, and an error if there is any.
-func (c *FakeImagePullJobs) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.ImagePullJob, err error) {
+func (c *FakeImagePullJobs) Get(name string, options v1.GetOptions) (result *v1alpha1.ImagePullJob, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewGetAction(imagepulljobsResource, c.ns, name), &v1alpha1.ImagePullJob{})
 
@@ -52,7 +50,7 @@ func (c *FakeImagePullJobs) Get(ctx context.Context, name string, options v1.Get
 }
 
 // List takes label and field selectors, and returns the list of ImagePullJobs that match those selectors.
-func (c *FakeImagePullJobs) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.ImagePullJobList, err error) {
+func (c *FakeImagePullJobs) List(opts v1.ListOptions) (result *v1alpha1.ImagePullJobList, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewListAction(imagepulljobsResource, imagepulljobsKind, c.ns, opts), &v1alpha1.ImagePullJobList{})
 
@@ -74,14 +72,14 @@ func (c *FakeImagePullJobs) List(ctx context.Context, opts v1.ListOptions) (resu
 }
 
 // Watch returns a watch.Interface that watches the requested imagePullJobs.
-func (c *FakeImagePullJobs) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (c *FakeImagePullJobs) Watch(opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
 		InvokesWatch(testing.NewWatchAction(imagepulljobsResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a imagePullJob and creates it.  Returns the server's representation of the imagePullJob, and an error, if there is any.
-func (c *FakeImagePullJobs) Create(ctx context.Context, imagePullJob *v1alpha1.ImagePullJob, opts v1.CreateOptions) (result *v1alpha1.ImagePullJob, err error) {
+func (c *FakeImagePullJobs) Create(imagePullJob *v1alpha1.ImagePullJob) (result *v1alpha1.ImagePullJob, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewCreateAction(imagepulljobsResource, c.ns, imagePullJob), &v1alpha1.ImagePullJob{})
 
@@ -92,7 +90,7 @@ func (c *FakeImagePullJobs) Create(ctx context.Context, imagePullJob *v1alpha1.I
 }
 
 // Update takes the representation of a imagePullJob and updates it. Returns the server's representation of the imagePullJob, and an error, if there is any.
-func (c *FakeImagePullJobs) Update(ctx context.Context, imagePullJob *v1alpha1.ImagePullJob, opts v1.UpdateOptions) (result *v1alpha1.ImagePullJob, err error) {
+func (c *FakeImagePullJobs) Update(imagePullJob *v1alpha1.ImagePullJob) (result *v1alpha1.ImagePullJob, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateAction(imagepulljobsResource, c.ns, imagePullJob), &v1alpha1.ImagePullJob{})
 
@@ -104,7 +102,7 @@ func (c *FakeImagePullJobs) Update(ctx context.Context, imagePullJob *v1alpha1.I
 
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
-func (c *FakeImagePullJobs) UpdateStatus(ctx context.Context, imagePullJob *v1alpha1.ImagePullJob, opts v1.UpdateOptions) (*v1alpha1.ImagePullJob, error) {
+func (c *FakeImagePullJobs) UpdateStatus(imagePullJob *v1alpha1.ImagePullJob) (*v1alpha1.ImagePullJob, error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewUpdateSubresourceAction(imagepulljobsResource, "status", c.ns, imagePullJob), &v1alpha1.ImagePullJob{})
 
@@ -115,7 +113,7 @@ func (c *FakeImagePullJobs) UpdateStatus(ctx context.Context, imagePullJob *v1al
 }
 
 // Delete takes name of the imagePullJob and deletes it. Returns an error if one occurs.
-func (c *FakeImagePullJobs) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeImagePullJobs) Delete(name string, options *v1.DeleteOptions) error {
 	_, err := c.Fake.
 		Invokes(testing.NewDeleteAction(imagepulljobsResource, c.ns, name), &v1alpha1.ImagePullJob{})
 
@@ -123,15 +121,15 @@ func (c *FakeImagePullJobs) Delete(ctx context.Context, name string, opts v1.Del
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeImagePullJobs) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(imagepulljobsResource, c.ns, listOpts)
+func (c *FakeImagePullJobs) DeleteCollection(options *v1.DeleteOptions, listOptions v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(imagepulljobsResource, c.ns, listOptions)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.ImagePullJobList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched imagePullJob.
-func (c *FakeImagePullJobs) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.ImagePullJob, err error) {
+func (c *FakeImagePullJobs) Patch(name string, pt types.PatchType, data []byte, subresources ...string) (result *v1alpha1.ImagePullJob, err error) {
 	obj, err := c.Fake.
 		Invokes(testing.NewPatchSubresourceAction(imagepulljobsResource, c.ns, name, pt, data, subresources...), &v1alpha1.ImagePullJob{})
 
