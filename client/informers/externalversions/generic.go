@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The Kruise Authors.
+Copyright 2022 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import (
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
 	policyv1alpha1 "github.com/openkruise/kruise-api/policy/v1alpha1"
+	rolloutsv1alpha1 "github.com/openkruise/kruise-api/rollouts/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -91,6 +92,12 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		// Group=policy.kruise.io, Version=v1alpha1
 	case policyv1alpha1.SchemeGroupVersion.WithResource("podunavailablebudgets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Policy().V1alpha1().PodUnavailableBudgets().Informer()}, nil
+
+		// Group=rollouts.kruise.io, Version=v1alpha1
+	case rolloutsv1alpha1.SchemeGroupVersion.WithResource("batchreleases"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Rollouts().V1alpha1().BatchReleases().Informer()}, nil
+	case rolloutsv1alpha1.SchemeGroupVersion.WithResource("rollouts"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Rollouts().V1alpha1().Rollouts().Informer()}, nil
 
 	}
 

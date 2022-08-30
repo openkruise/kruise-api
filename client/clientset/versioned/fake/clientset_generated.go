@@ -1,5 +1,5 @@
 /*
-Copyright 2021 The Kruise Authors.
+Copyright 2022 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import (
 	fakeappsv1beta1 "github.com/openkruise/kruise-api/client/clientset/versioned/typed/apps/v1beta1/fake"
 	policyv1alpha1 "github.com/openkruise/kruise-api/client/clientset/versioned/typed/policy/v1alpha1"
 	fakepolicyv1alpha1 "github.com/openkruise/kruise-api/client/clientset/versioned/typed/policy/v1alpha1/fake"
+	rolloutsv1alpha1 "github.com/openkruise/kruise-api/client/clientset/versioned/typed/rollouts/v1alpha1"
+	fakerolloutsv1alpha1 "github.com/openkruise/kruise-api/client/clientset/versioned/typed/rollouts/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -93,4 +95,9 @@ func (c *Clientset) AppsV1beta1() appsv1beta1.AppsV1beta1Interface {
 // PolicyV1alpha1 retrieves the PolicyV1alpha1Client
 func (c *Clientset) PolicyV1alpha1() policyv1alpha1.PolicyV1alpha1Interface {
 	return &fakepolicyv1alpha1.FakePolicyV1alpha1{Fake: &c.Fake}
+}
+
+// RolloutsV1alpha1 retrieves the RolloutsV1alpha1Client
+func (c *Clientset) RolloutsV1alpha1() rolloutsv1alpha1.RolloutsV1alpha1Interface {
+	return &fakerolloutsv1alpha1.FakeRolloutsV1alpha1{Fake: &c.Fake}
 }
