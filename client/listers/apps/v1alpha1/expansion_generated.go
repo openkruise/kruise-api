@@ -78,6 +78,10 @@ type ImagePullJobNamespaceListerExpansion interface{}
 // NodeImageLister.
 type NodeImageListerExpansion interface{}
 
+// NodePodProbeListerExpansion allows custom methods to be added to
+// NodePodProbeLister.
+type NodePodProbeListerExpansion interface{}
+
 // PersistentPodStateListerExpansion allows custom methods to be added to
 // PersistentPodStateLister.
 type PersistentPodStateListerExpansion interface{}
@@ -85,6 +89,14 @@ type PersistentPodStateListerExpansion interface{}
 // PersistentPodStateNamespaceListerExpansion allows custom methods to be added to
 // PersistentPodStateNamespaceLister.
 type PersistentPodStateNamespaceListerExpansion interface{}
+
+// PodProbeMarkerListerExpansion allows custom methods to be added to
+// PodProbeMarkerLister.
+type PodProbeMarkerListerExpansion interface{}
+
+// PodProbeMarkerNamespaceListerExpansion allows custom methods to be added to
+// PodProbeMarkerNamespaceLister.
+type PodProbeMarkerNamespaceListerExpansion interface{}
 
 // ResourceDistributionListerExpansion allows custom methods to be added to
 // ResourceDistributionLister.
