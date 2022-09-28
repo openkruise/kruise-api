@@ -17,7 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	appspub "github.com/openkruise/kruise-api/apps/pub"
+	appspub "github.com/openkruise/kruise/apis/apps/pub"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

@@ -25,8 +25,7 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 const (
-	EphemeralContainerCreateByJob = "apps.kruise.io/ephemeraljob"
-	EphemeralContainerEnvKey      = "KRUISE_EJOB_ID"
+	EphemeralContainerEnvKey = "KRUISE_EJOB_ID"
 )
 
 // EphemeralJobSpec defines the desired state of EphemeralJob
@@ -38,7 +37,7 @@ type EphemeralJobSpec struct {
 
 	// Replicas indicates a part of the quantity from matched pods by selector.
 	// Usually it is used for gray scale working.
-	// if Replicas exceeded the matched number by selector, replicas will not work.
+	// if Replicas exceeded the matched number by selector or not be set, replicas will not work.
 	Replicas *int32 `json:"replicas,omitempty"`
 
 	// Parallelism specifies the maximum desired number of pods which matches running ephemeral containers.
