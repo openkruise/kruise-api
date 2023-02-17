@@ -56,6 +56,10 @@ func (c *FakeAppsV1alpha1) ImagePullJobs(namespace string) v1alpha1.ImagePullJob
 	return &FakeImagePullJobs{c, namespace}
 }
 
+func (c *FakeAppsV1alpha1) ImagesPullJobs(namespace string) v1alpha1.ImagesPullJobInterface {
+	return &FakeImagesPullJobs{c, namespace}
+}
+
 func (c *FakeAppsV1alpha1) NodeImages() v1alpha1.NodeImageInterface {
 	return &FakeNodeImages{c}
 }

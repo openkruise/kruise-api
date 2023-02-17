@@ -32,6 +32,8 @@ type EphemeralJobExpansion interface{}
 
 type ImagePullJobExpansion interface{}
 
+type ImagesPullJobExpansion interface{}
+
 type NodeImageExpansion interface{}
 
 type NodePodProbeExpansion interface{}

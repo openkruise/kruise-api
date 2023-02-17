@@ -74,6 +74,14 @@ type ImagePullJobListerExpansion interface{}
 // ImagePullJobNamespaceLister.
 type ImagePullJobNamespaceListerExpansion interface{}
 
+// ImagesPullJobListerExpansion allows custom methods to be added to
+// ImagesPullJobLister.
+type ImagesPullJobListerExpansion interface{}
+
+// ImagesPullJobNamespaceListerExpansion allows custom methods to be added to
+// ImagesPullJobNamespaceLister.
+type ImagesPullJobNamespaceListerExpansion interface{}
+
 // NodeImageListerExpansion allows custom methods to be added to
 // NodeImageLister.
 type NodeImageListerExpansion interface{}

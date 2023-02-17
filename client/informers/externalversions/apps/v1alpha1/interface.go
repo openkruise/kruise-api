@@ -38,6 +38,8 @@ type Interface interface {
 	EphemeralJobs() EphemeralJobInformer
 	// ImagePullJobs returns a ImagePullJobInformer.
 	ImagePullJobs() ImagePullJobInformer
+	// ImagesPullJobs returns a ImagesPullJobInformer.
+	ImagesPullJobs() ImagesPullJobInformer
 	// NodeImages returns a NodeImageInformer.
 	NodeImages() NodeImageInformer
 	// NodePodProbes returns a NodePodProbeInformer.
@@ -102,6 +104,11 @@ func (v *version) EphemeralJobs() EphemeralJobInformer {
 // ImagePullJobs returns a ImagePullJobInformer.
 func (v *version) ImagePullJobs() ImagePullJobInformer {
 	return &imagePullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// ImagesPullJobs returns a ImagesPullJobInformer.
+func (v *version) ImagesPullJobs() ImagesPullJobInformer {
+	return &imagesPullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // NodeImages returns a NodeImageInformer.
