@@ -70,6 +70,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().EphemeralJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("imagepulljobs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ImagePullJobs().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("imagespulljobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ImagesPullJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("nodeimages"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().NodeImages().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("nodepodprobes"):

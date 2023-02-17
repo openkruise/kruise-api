@@ -33,6 +33,7 @@ type AppsV1alpha1Interface interface {
 	DaemonSetsGetter
 	EphemeralJobsGetter
 	ImagePullJobsGetter
+	ImagesPullJobsGetter
 	NodeImagesGetter
 	NodePodProbesGetter
 	PersistentPodStatesGetter
@@ -75,6 +76,10 @@ func (c *AppsV1alpha1Client) EphemeralJobs(namespace string) EphemeralJobInterfa
 
 func (c *AppsV1alpha1Client) ImagePullJobs(namespace string) ImagePullJobInterface {
 	return newImagePullJobs(c, namespace)
+}
+
+func (c *AppsV1alpha1Client) ImagesPullJobs(namespace string) ImagesPullJobInterface {
+	return newImagesPullJobs(c, namespace)
 }
 
 func (c *AppsV1alpha1Client) NodeImages() NodeImageInterface {
