@@ -17,7 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	batchv1 "k8s.io/api/batch/v1"
+	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -78,7 +78,7 @@ type CronJobTemplate struct {
 	// +optional
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
-	JobTemplate *batchv1.JobTemplateSpec `json:"jobTemplate,omitempty" protobuf:"bytes,1,opt,name=jobTemplate"`
+	JobTemplate *batchv1beta1.JobTemplateSpec `json:"jobTemplate,omitempty" protobuf:"bytes,1,opt,name=jobTemplate"`
 
 	// Specifies the broadcastjob that will be created when executing a BroadcastCronJob.
 	// +optional
