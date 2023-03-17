@@ -36,6 +36,10 @@ func (c *FakeRolloutsV1alpha1) Rollouts(namespace string) v1alpha1.RolloutInterf
 	return &FakeRollouts{c, namespace}
 }
 
+func (c *FakeRolloutsV1alpha1) RolloutHistories(namespace string) v1alpha1.RolloutHistoryInterface {
+	return &FakeRolloutHistories{c, namespace}
+}
+
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
 func (c *FakeRolloutsV1alpha1) RESTClient() rest.Interface {

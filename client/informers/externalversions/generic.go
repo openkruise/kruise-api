@@ -102,6 +102,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Rollouts().V1alpha1().BatchReleases().Informer()}, nil
 	case rolloutsv1alpha1.SchemeGroupVersion.WithResource("rollouts"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Rollouts().V1alpha1().Rollouts().Informer()}, nil
+	case rolloutsv1alpha1.SchemeGroupVersion.WithResource("rollouthistories"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Rollouts().V1alpha1().RolloutHistories().Informer()}, nil
 
 	}
 

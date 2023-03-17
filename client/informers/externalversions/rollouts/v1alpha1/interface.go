@@ -28,6 +28,8 @@ type Interface interface {
 	BatchReleases() BatchReleaseInformer
 	// Rollouts returns a RolloutInformer.
 	Rollouts() RolloutInformer
+	// RolloutHistories returns a RolloutHistoryInformer.
+	RolloutHistories() RolloutHistoryInformer
 }
 
 type version struct {
@@ -49,4 +51,9 @@ func (v *version) BatchReleases() BatchReleaseInformer {
 // Rollouts returns a RolloutInformer.
 func (v *version) Rollouts() RolloutInformer {
 	return &rolloutInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// RolloutHistories returns a RolloutHistoryInformer.
+func (v *version) RolloutHistories() RolloutHistoryInformer {
+	return &rolloutHistoryInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }

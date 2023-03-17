@@ -28,6 +28,7 @@ type RolloutsV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	BatchReleasesGetter
 	RolloutsGetter
+	RolloutHistoriesGetter
 }
 
 // RolloutsV1alpha1Client is used to interact with features provided by the rollouts.kruise.io group.
@@ -41,6 +42,10 @@ func (c *RolloutsV1alpha1Client) BatchReleases(namespace string) BatchReleaseInt
 
 func (c *RolloutsV1alpha1Client) Rollouts(namespace string) RolloutInterface {
 	return newRollouts(c, namespace)
+}
+
+func (c *RolloutsV1alpha1Client) RolloutHistories(namespace string) RolloutHistoryInterface {
+	return newRolloutHistories(c, namespace)
 }
 
 // NewForConfig creates a new RolloutsV1alpha1Client for the given config.
