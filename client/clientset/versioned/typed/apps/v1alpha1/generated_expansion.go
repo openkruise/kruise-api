@@ -30,6 +30,8 @@ type DaemonSetExpansion interface{}
 
 type EphemeralJobExpansion interface{}
 
+type ImageListPullJobExpansion interface{}
+
 type ImagePullJobExpansion interface{}
 
 type ImagesPullJobExpansion interface{}

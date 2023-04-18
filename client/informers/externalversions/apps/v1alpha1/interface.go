@@ -36,6 +36,8 @@ type Interface interface {
 	DaemonSets() DaemonSetInformer
 	// EphemeralJobs returns a EphemeralJobInformer.
 	EphemeralJobs() EphemeralJobInformer
+	// ImageListPullJobs returns a ImageListPullJobInformer.
+	ImageListPullJobs() ImageListPullJobInformer
 	// ImagePullJobs returns a ImagePullJobInformer.
 	ImagePullJobs() ImagePullJobInformer
 	// ImagesPullJobs returns a ImagesPullJobInformer.
@@ -99,6 +101,11 @@ func (v *version) DaemonSets() DaemonSetInformer {
 // EphemeralJobs returns a EphemeralJobInformer.
 func (v *version) EphemeralJobs() EphemeralJobInformer {
 	return &ephemeralJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// ImageListPullJobs returns a ImageListPullJobInformer.
+func (v *version) ImageListPullJobs() ImageListPullJobInformer {
+	return &imageListPullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // ImagePullJobs returns a ImagePullJobInformer.
