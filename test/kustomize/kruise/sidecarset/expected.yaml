@@ -1,0 +1,47 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: SidecarSet
+metadata:
+  name: test-sidecarset
+spec:
+  containers:
+  - command:
+    - sleep
+    - 101d
+    image: centos:6.8
+    name: sidecar1
+    volumeMounts:
+    - mountPath: /var/log2
+      name: log-volume2
+    - mountPath: /var/log
+      name: log-volume1
+  - command:
+    - sleep
+    - 102d
+    image: centos:6.9
+    name: sidecar3
+    volumeMounts:
+    - mountPath: /var/log
+      name: log-volume3
+  - command:
+    - sleep
+    - 999d
+    image: centos:6.8
+    name: sidecar2
+    volumeMounts:
+    - mountPath: /var/log
+      name: log-volume2
+  selector:
+    matchLabels:
+      app: nginx
+  updateStrategy:
+    maxUnavailable: 1
+    type: RollingUpdate
+  volumes:
+  - emptyDir: {}
+    hostPath:
+      path: /var/log
+    name: log-volume1
+  - emptyDir: {}
+    name: log-volume3
+  - emptyDir: {}
+    name: log-volume2

@@ -1,0 +1,42 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: WorkloadSpread
+metadata:
+  name: workloadspread-demo
+spec:
+  scheduleStrategy:
+    adaptive:
+      rescheduleCriticalSeconds: 30
+    type: Adaptive | Fixed
+  subsets:
+  - name: subset-b
+    requiredNodeSelectorTerm:
+      matchExpressions:
+      - key: topology.kubernetes.io/zone
+        operator: In
+        values:
+        - zone-b
+  - maxReplicas: 3
+    name: subset-a
+    patch:
+      metadata:
+        labels:
+          xxx-specific-label: xxx
+    preferredNodeSelectorTerms:
+    - matchExpressions:
+      - key: another-node-label-key
+        operator: In
+        values:
+        - another-node-label-value
+      preference: null
+      weight: 1
+    requiredNodeSelectorTerm:
+      matchExpressions:
+      - key: topology.kubernetes.io/zone
+        operator: In
+        values:
+        - zone-a
+    tolertions: []
+  targetRef:
+    apiVersion: apps/v1 | apps.kruise.io/v1alpha1
+    kind: Deployment | CloneSet
+    name: workload-test

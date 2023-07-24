@@ -3,6 +3,7 @@ module github.com/openkruise/kruise-api
 go 1.18
 
 require (
+	github.com/blang/semver/v4 v4.0.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible
 	k8s.io/api v0.22.6
 	k8s.io/apimachinery v0.22.6

@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- sidecarset.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps.kruise.io/v1alpha1
+  kind: SidecarSet
+  metadata:
+    name: test-sidecarset
+  spec:
+    containers:
+      - name: sidecar1
+        image: centos:6.8
+        command: ["sleep", "101d"]
+        volumeMounts:
+          - name: log-volume2
+            mountPath: /var/log2
+      - name: sidecar3
+        image: centos:6.9
+        command: ["sleep", "102d"]
+        volumeMounts:
+          - name: log-volume3
+            mountPath: /var/log
+    volumes:
+      - name: log-volume1
+        hostPath:
+          path: /var/log
+      - name: log-volume3
+        emptyDir: {}

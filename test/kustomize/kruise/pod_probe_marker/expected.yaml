@@ -1,0 +1,31 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: PodProbeMarker
+metadata:
+  name: game-server-probe
+  namespace: ns
+spec:
+  probes:
+  - containerName: game-server
+    markerPolicy:
+    - annotations:
+        controller.kubernetes.io/pod-deletion-cost: "-10"
+      labels:
+        gameserver-idle: "true"
+      state: Succeeded
+    - annotations:
+        controller.kubernetes.io/pod-deletion-cost: "10"
+      labels:
+        gameserver-idle: "false"
+      state: Failed
+    name: Idle
+    podConditionType: game.io/idle
+    probe:
+      exec: /home/game/idle.sh
+      failureThreshold: 3
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 3
+  selector:
+    matchLabels:
+      app: game-server

@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ephemeraljob.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps.kruise.io/v1alpha1
+    kind: EphemeralJob
+    metadata:
+      name: hello-world-ephemeral-job
+    spec:
+      replicas: 2
+      template:
+        ephemeralContainers:
+          - image: busybox:v1.16
+            imagePullPolicy: IfNotPresent
+            terminationMessagePolicy: File
+            targetContainerName: test
+            name: test-ec
+            command:
+              - pidof
+              - test
+            tty: true
+            stdin: true
