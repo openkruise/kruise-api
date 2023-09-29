@@ -1,0 +1,48 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: CloneSet
+metadata:
+  labels:
+    app: sample
+  name: sample-data
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: sample
+  template:
+    metadata:
+      labels:
+        app: sample
+    spec:
+      containers:
+      - image: nginx:mainline
+        name: nginx
+        volumeMounts:
+        - mountPath: /var/log
+          name: log-volume
+        - mountPath: /usr/share/nginx/html
+          name: data-vol
+      - command:
+        - sleep
+        - 999d
+        image: busybox:1.28
+        name: test
+      - image: busybox
+        name: busybox
+  volumeClaimTemplates:
+  - metadata:
+      name: data-vol
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: log-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi

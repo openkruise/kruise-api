@@ -1,0 +1,33 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: EphemeralJob
+metadata:
+  name: hello-world-ephemeral-job
+spec:
+  parallelism: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    ephemeralContainers:
+    - command:
+      - pidof
+      - test
+      image: busybox:v1.16
+      imagePullPolicy: IfNotPresent
+      name: test-ec
+      stdin: true
+      targetContainerName: test
+      terminationMessagePolicy: File
+      tty: true
+    - command:
+      - pidof
+      - helloworld
+      image: busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: helloworld-ec
+      stdin: true
+      targetContainerName: helloworld
+      terminationMessagePolicy: File
+      tty: true
+  ttlSecondsAfterCreated: 1800

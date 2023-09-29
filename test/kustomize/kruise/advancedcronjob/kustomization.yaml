@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - advancedcronjob.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps.kruise.io/v1alpha1
+    kind: AdvancedCronJob
+    metadata:
+      name: acj-test
+    spec:
+      template:
+        broadcastJobTemplate:
+          spec:
+            template:
+              spec:
+                initContainers:
+                  - name: job-1
+                    image: alpine:3:12
+                  - name: job-2
+                    image: alpine:3.11
+                    command:
+                      - 'sh'
+                      - '-c'
+                      - >
+                        for i in 1 2 3;
+                        do
+                          echo "job-2 `date`";
+                          sleep 1s;
+                        done;
+                        cat /srv/input/code &&
+                        echo artifact > /srv/input/output/artifact
+                    volumeMounts:
+                      - mountPath: /srv/input/
+                        name: input
+                      - mountPath: /srv/input/output/
+                        name: output
+                volumes:
+                  - name: output
+                    emptyDir: {}

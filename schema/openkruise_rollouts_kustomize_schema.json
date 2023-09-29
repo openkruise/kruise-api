@@ -1,0 +1,1193 @@
+{
+    "definitions": {
+        "io.kruise.rollouts.v1alpha1.BatchRelease": {
+            "type": "object",
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+                },
+                "spec": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.BatchReleaseSpec"
+                },
+                "status": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.BatchReleaseStatus"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "BatchRelease",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.BatchReleaseCanaryStatus": {
+            "type": "object",
+            "required": [
+                "currentBatch"
+            ],
+            "properties": {
+                "batchReadyTime": {
+                    "description": "BatchReadyTime is the ready timestamp of the current batch or the last batch. This field is updated once a batch ready, and the batches[x].pausedSeconds relies on this field to calculate the real-time duration.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "batchState": {
+                    "description": "CurrentBatchState indicates the release state of the current batch.",
+                    "type": "string"
+                },
+                "currentBatch": {
+                    "description": "The current batch the rollout is working on/blocked, it starts from 0",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "noNeedUpdateReplicas": {
+                    "description": "the number of pods that no need to rollback in rollback scene.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "updatedReadyReplicas": {
+                    "description": "UpdatedReadyReplicas is the number upgraded Pods that have a Ready Condition.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "updatedReplicas": {
+                    "description": "UpdatedReplicas is the number of upgraded Pods.",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "BatchReleaseCanaryStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.BatchReleaseList": {
+            "description": "BatchReleaseList contains a list of BatchRelease",
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.BatchRelease"
+                    }
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "BatchReleaseList",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.BatchReleaseSpec": {
+            "description": "BatchReleaseSpec defines how to describe an update between different compRevision",
+            "type": "object",
+            "required": [
+                "targetReference",
+                "releasePlan"
+            ],
+            "properties": {
+                "releasePlan": {
+                    "description": "ReleasePlan is the details on how to rollout the resources",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.ReleasePlan"
+                },
+                "targetReference": {
+                    "description": "TargetRef contains the GVK and name of the workload that we need to upgrade to.",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.ObjectRef"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "BatchReleaseSpec",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.BatchReleaseStatus": {
+            "description": "BatchReleaseStatus defines the observed state of a release plan",
+            "type": "object",
+            "properties": {
+                "canaryStatus": {
+                    "description": "CanaryStatus describes the state of the canary rollout.",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.BatchReleaseCanaryStatus"
+                },
+                "collisionCount": {
+                    "description": "Count of hash collisions for creating canary Deployment. The controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest canary Deployment.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "conditions": {
+                    "description": "Conditions represents the observed process state of each phase during executing the release plan.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutCondition"
+                    }
+                },
+                "observedGeneration": {
+                    "description": "ObservedGeneration is the most recent generation observed for this BatchRelease. It corresponds to this BatchRelease's generation, which is updated on mutation by the API Server, and only if BatchRelease Spec was changed, its generation will increase 1.",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "observedReleasePlanHash": {
+                    "description": "ObservedReleasePlanHash is a hash code of observed itself spec.releasePlan.",
+                    "type": "string"
+                },
+                "observedRolloutID": {
+                    "description": "ObservedRolloutID is the most recent rollout-id observed for this BatchRelease. If RolloutID was changed, we will restart to roll out from batch 0, to ensure the batch-id and rollout-id labels of Pods are correct.",
+                    "type": "string"
+                },
+                "observedWorkloadReplicas": {
+                    "description": "ObservedWorkloadReplicas is observed replicas of target referenced workload. This field is designed to deal with scaling event during rollout, if this field changed, it means that the workload is scaling during rollout.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "phase": {
+                    "description": "Phase is the release plan phase, which indicates the current state of release plan state machine in BatchRelease controller.",
+                    "type": "string"
+                },
+                "stableRevision": {
+                    "description": "StableRevision is the pod-template-hash of stable revision pod template.",
+                    "type": "string"
+                },
+                "updateRevision": {
+                    "description": "UpdateRevision is the pod-template-hash of update revision pod template.",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "BatchReleaseStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.CanaryStatus": {
+            "description": "CanaryStatus status fields that only pertain to the canary rollout",
+            "type": "object",
+            "required": [
+                "canaryRevision",
+                "podTemplateHash",
+                "canaryReplicas",
+                "canaryReadyReplicas",
+                "currentStepState"
+            ],
+            "properties": {
+                "canaryReadyReplicas": {
+                    "description": "CanaryReadyReplicas the numbers of ready canary revision pods",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "canaryReplicas": {
+                    "description": "CanaryReplicas the numbers of canary revision pods",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "canaryRevision": {
+                    "description": "CanaryRevision is calculated by rollout based on podTemplateHash, and the internal logic flow uses It may be different from rs podTemplateHash in different k8s versions, so it cannot be used as service selector label",
+                    "type": "string",
+                    "default": ""
+                },
+                "currentStepIndex": {
+                    "description": "CurrentStepIndex defines the current step of the rollout is on. If the current step index is null, the controller will execute the rollout.",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "currentStepState": {
+                    "type": "string",
+                    "default": ""
+                },
+                "lastUpdateTime": {
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "observedRolloutID": {
+                    "description": "ObservedRolloutID will record the newest spec.RolloutID if status.canaryRevision equals to workload.updateRevision",
+                    "type": "string"
+                },
+                "observedWorkloadGeneration": {
+                    "description": "observedWorkloadGeneration is the most recent generation observed for this Rollout ref workload generation.",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "podTemplateHash": {
+                    "description": "pod template hash is used as service selector label",
+                    "type": "string",
+                    "default": ""
+                },
+                "rolloutHash": {
+                    "description": "RolloutHash from rollout.spec object",
+                    "type": "string"
+                },
+                "stableRevision": {
+                    "description": "StableRevision indicates the revision of stable pods",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "CanaryStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.CanaryStep": {
+            "description": "CanaryStep defines a step of a canary workload.",
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "description": "Matches define conditions used for matching the incoming HTTP requests to canary service. Each match is independent, i.e. this rule will be matched if **any** one of the matches is satisfied. If Gateway API, current only support one match. And cannot support both weight and matches, if both are configured, then matches takes precedence.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.HttpRouteMatch"
+                    }
+                },
+                "pause": {
+                    "description": "Pause defines a pause stage for a rollout, manual or auto",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutPause"
+                },
+                "replicas": {
+                    "description": "Replicas is the number of expected canary pods in this batch it can be an absolute number (ex: 5) or a percentage of total pods.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "weight": {
+                    "description": "Weight indicate how many percentage of traffic the canary pods should receive",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "CanaryStep",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.CanaryStepInfo": {
+            "description": "CanaryStepInfo indicates the pods for a revision",
+            "type": "object",
+            "properties": {
+                "canaryStepIndex": {
+                    "description": "CanaryStepIndex indicates step this revision",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "pods": {
+                    "description": "Pods indicates the pods information",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.Pod"
+                    }
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "CanaryStepInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.CanaryStrategy": {
+            "description": "CanaryStrategy defines parameters for a Replica Based Canary",
+            "type": "object",
+            "properties": {
+                "failureThreshold": {
+                    "description": "FailureThreshold indicates how many failed pods can be tolerated in all upgraded pods. Only when FailureThreshold are satisfied, Rollout can enter ready state. If FailureThreshold is nil, Rollout will use the MaxUnavailable of workload as its FailureThreshold. Defaults to nil.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "steps": {
+                    "description": "Steps define the order of phases to execute release in batches(20%, 40%, 60%, 80%, 100%)",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.CanaryStep"
+                    }
+                },
+                "trafficRoutings": {
+                    "description": "TrafficRoutings hosts all the supported service meshes supported to enable more fine-grained traffic routing todo current only support one TrafficRouting",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.TrafficRouting"
+                    }
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "CanaryStrategy",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.DeploymentExtraStatus": {
+            "description": "DeploymentExtraStatus is extra status field for Advanced Deployment",
+            "type": "object",
+            "properties": {
+                "expectedUpdatedReplicas": {
+                    "description": "ExpectedUpdatedReplicas is an absolute number calculated based on Partition and Deployment.Spec.Replicas, means how many pods are expected be updated under current strategy. This field is designed to avoid users to fall into the details of algorithm for Partition calculation.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "updatedReadyReplicas": {
+                    "description": "UpdatedReadyReplicas the number of pods that has been updated and ready.",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "DeploymentExtraStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.DeploymentStrategy": {
+            "description": "DeploymentStrategy is strategy field for Advanced Deployment",
+            "type": "object",
+            "properties": {
+                "partition": {
+                    "description": "Partition describe how many Pods should be updated during rollout. We use this field to implement partition-style rolling update.",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "paused": {
+                    "description": "Paused = true will block the upgrade of Pods",
+                    "type": "boolean"
+                },
+                "rollingStyle": {
+                    "description": "RollingStyle define the behavior of rolling for deployment.",
+                    "type": "string"
+                },
+                "rollingUpdate": {
+                    "description": "original deployment strategy rolling update fields",
+                    "$ref": "#/definitions/io.k8s.api.apps.v1.RollingUpdateDeployment"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "DeploymentStrategy",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.GatewayTrafficRouting": {
+            "description": "GatewayTrafficRouting configuration for gateway api",
+            "type": "object",
+            "properties": {
+                "httpRouteName": {
+                    "description": "HTTPRouteName refers to the name of an `HTTPRoute` resource in the same namespace as the `Rollout`",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "GatewayTrafficRouting",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.HTTPRouteInfo": {
+            "description": "HTTPRouteInfo indicates information of gateway API",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "HTTPRouteInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.HttpRouteMatch": {
+            "type": "object",
+            "properties": {
+                "headers": {
+                    "description": "Headers specifies HTTP request header matchers. Multiple match values are ANDed together, meaning, a request must match all the specified headers to select the route.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.k8s.sigs.gateway-api.apis.v1alpha2.HTTPHeaderMatch"
+                    }
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "HttpRouteMatch",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.IngressInfo": {
+            "description": "IngressInfo indicates information of the ingress related",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "IngressInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.IngressTrafficRouting": {
+            "description": "IngressTrafficRouting configuration for ingress controller to control traffic routing",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "classType": {
+                    "description": "ClassType refers to the type of `Ingress`. current support nginx, aliyun-alb. default is nginx.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name refers to the name of an `Ingress` resource in the same namespace as the `Rollout`",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "IngressTrafficRouting",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.NameAndSpecData": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "NameAndSpecData",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.ObjectRef": {
+            "type": "object",
+            "properties": {
+                "workloadRef": {
+                    "description": "WorkloadRef contains enough information to let you identify a workload for Rollout Batch release of the bypass",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.WorkloadRef"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "ObjectRef",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.Pod": {
+            "description": "Pod indicates the information of a pod, including name, ip, node_name.",
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "description": "IP indicates the pod ip",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name indicates the node name",
+                    "type": "string"
+                },
+                "nodeName": {
+                    "description": "NodeName indicates the node which pod is located at",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "Pod",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.ReleaseBatch": {
+            "description": "ReleaseBatch is used to describe how each batch release should be",
+            "type": "object",
+            "required": [
+                "canaryReplicas"
+            ],
+            "properties": {
+                "canaryReplicas": {
+                    "description": "CanaryReplicas is the number of upgraded pods that should have in this batch. it can be an absolute number (ex: 5) or a percentage of workload replicas. batches[i].canaryReplicas should less than or equal to batches[j].canaryReplicas if i \u003c j.",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "ReleaseBatch",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.ReleasePlan": {
+            "description": "ReleasePlan fines the details of the release plan",
+            "type": "object",
+            "properties": {
+                "batchPartition": {
+                    "description": "All pods in the batches up to the batchPartition (included) will have the target resource specification while the rest still is the stable revision. This is designed for the operators to manually rollout. Default is nil, which means no partition and will release all batches. BatchPartition start from 0.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "batches": {
+                    "description": "Batches is the details on each batch of the ReleasePlan. Users can specify their batch plan in this field, such as: batches: - canaryReplicas: 1  # batches 0 - canaryReplicas: 2  # batches 1 - canaryReplicas: 5  # batches 2 Not that these canaryReplicas should be a non-decreasing sequence.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.ReleaseBatch"
+                    }
+                },
+                "failureThreshold": {
+                    "description": "FailureThreshold indicates how many failed pods can be tolerated in all upgraded pods. Only when FailureThreshold are satisfied, Rollout can enter ready state. If FailureThreshold is nil, Rollout will use the MaxUnavailable of workload as its FailureThreshold. Defaults to nil.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "finalizingPolicy": {
+                    "description": "FinalizingPolicy define the behavior of controller when phase enter Finalizing Defaults to \"Immediate\"",
+                    "type": "string"
+                },
+                "rolloutID": {
+                    "description": "RolloutID indicates an id for each rollout progress",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "ReleasePlan",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.Rollout": {
+            "description": "Rollout is the Schema for the rollouts API",
+            "type": "object",
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+                },
+                "spec": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutSpec"
+                },
+                "status": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutStatus"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "Rollout",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutCondition": {
+            "description": "RolloutCondition describes the state of a rollout at a certain point.",
+            "type": "object",
+            "required": [
+                "type",
+                "status",
+                "reason",
+                "message"
+            ],
+            "properties": {
+                "lastTransitionTime": {
+                    "description": "Last time the condition transitioned from one status to another.",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "lastUpdateTime": {
+                    "description": "The last time this condition was updated.",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "message": {
+                    "description": "A human readable message indicating details about the transition.",
+                    "type": "string",
+                    "default": ""
+                },
+                "reason": {
+                    "description": "The reason for the condition's last transition.",
+                    "type": "string",
+                    "default": ""
+                },
+                "status": {
+                    "description": "Phase of the condition, one of True, False, Unknown.",
+                    "type": "string",
+                    "default": ""
+                },
+                "type": {
+                    "description": "Type of rollout condition.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutCondition",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutHistory": {
+            "description": "RolloutHistory is the Schema for the rollouthistories API",
+            "type": "object",
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+                },
+                "spec": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutHistorySpec"
+                },
+                "status": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutHistoryStatus"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutHistory",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutHistoryList": {
+            "description": "RolloutHistoryList contains a list of RolloutHistory",
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutHistory"
+                    }
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutHistoryList",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutHistorySpec": {
+            "description": "RolloutHistorySpec defines the desired state of RolloutHistory",
+            "type": "object",
+            "properties": {
+                "rollout": {
+                    "description": "Rollout indicates information of the rollout related with rollouthistory",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutInfo"
+                },
+                "service": {
+                    "description": "Service indicates information of the service related with workload",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.ServiceInfo"
+                },
+                "trafficRouting": {
+                    "description": "TrafficRouting indicates information of traffic route related with workload",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.TrafficRoutingInfo"
+                },
+                "workload": {
+                    "description": "Workload indicates information of the workload, such as cloneset, deployment, advanced statefulset",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.WorkloadInfo"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutHistorySpec",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutHistoryStatus": {
+            "description": "RolloutHistoryStatus defines the observed state of RolloutHistory",
+            "type": "object",
+            "properties": {
+                "canarySteps": {
+                    "description": "CanarySteps indicates the pods released each step",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.CanaryStepInfo"
+                    }
+                },
+                "phase": {
+                    "description": "Phase indicates phase of RolloutHistory, just \"\" or \"completed\"",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutHistoryStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutInfo": {
+            "description": "RolloutInfo indicates information of the rollout related",
+            "type": "object",
+            "required": [
+                "rolloutID",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                },
+                "rolloutID": {
+                    "description": "RolloutID indicates the new rollout if there is no new RolloutID this time, ignore it and not execute RolloutHistory",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutList": {
+            "description": "RolloutList contains a list of Rollout",
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.Rollout"
+                    }
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutList",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutPause": {
+            "description": "RolloutPause defines a pause stage for a rollout",
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "description": "Duration the amount of time to wait before moving to the next step.",
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutPause",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutSpec": {
+            "description": "RolloutSpec defines the desired state of Rollout",
+            "type": "object",
+            "required": [
+                "objectRef",
+                "strategy"
+            ],
+            "properties": {
+                "objectRef": {
+                    "description": "INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run \"make\" to regenerate code after modifying this file ObjectRef indicates workload",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.ObjectRef"
+                },
+                "rolloutID": {
+                    "description": "DeprecatedRolloutID is the deprecated field. It is recommended that configure RolloutId in workload.annotations[rollouts.kruise.io/rollout-id]. RolloutID should be changed before each workload revision publication. It is to distinguish consecutive multiple workload publications and rollout progress.",
+                    "type": "string"
+                },
+                "strategy": {
+                    "description": "rollout strategy",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutStrategy"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutSpec",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutStatus": {
+            "description": "RolloutStatus defines the observed state of Rollout",
+            "type": "object",
+            "properties": {
+                "canaryStatus": {
+                    "description": "Canary describes the state of the canary rollout",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.CanaryStatus"
+                },
+                "conditions": {
+                    "description": "Conditions a list of conditions a rollout can have.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.RolloutCondition"
+                    }
+                },
+                "message": {
+                    "description": "Message provides details on why the rollout is in its current phase",
+                    "type": "string"
+                },
+                "observedGeneration": {
+                    "description": "observedGeneration is the most recent generation observed for this Rollout.",
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "phase": {
+                    "description": "BlueGreenStatus *BlueGreenStatus `json:\"blueGreenStatus,omitempty\"` Phase is the rollout phase.",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.RolloutStrategy": {
+            "description": "RolloutStrategy defines strategy to apply during next rollout",
+            "type": "object",
+            "properties": {
+                "canary": {
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.CanaryStrategy"
+                },
+                "paused": {
+                    "description": "Paused indicates that the Rollout is paused. Default value is false",
+                    "type": "boolean"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "RolloutStrategy",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.ServiceInfo": {
+            "description": "ServiceInfo indicates information of the service related",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "ServiceInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.TrafficRouting": {
+            "description": "TrafficRouting hosts all the different configuration for supported service meshes to enable more fine-grained traffic routing",
+            "type": "object",
+            "required": [
+                "service"
+            ],
+            "properties": {
+                "gateway": {
+                    "description": "Gateway holds Gateway specific configuration to route traffic Gateway configuration only supports \u003e= v0.4.0 (v1alpha2).",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.GatewayTrafficRouting"
+                },
+                "gracePeriodSeconds": {
+                    "description": "Optional duration in seconds the traffic provider(e.g. nginx ingress controller) consumes the service, ingress configuration changes gracefully.",
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "ingress": {
+                    "description": "Ingress holds Ingress specific configuration to route traffic, e.g. Nginx, Alb.",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.IngressTrafficRouting"
+                },
+                "service": {
+                    "description": "Service holds the name of a service which selects pods with stable version and don't select any pods with canary version.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "TrafficRouting",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.TrafficRoutingInfo": {
+            "description": "TrafficRoutingInfo indicates information of Gateway API or Ingress",
+            "type": "object",
+            "properties": {
+                "httpRoute": {
+                    "description": "HTTPRouteRef indacates information of Gateway API",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.HTTPRouteInfo"
+                },
+                "ingress": {
+                    "description": "IngressRef indicates information of ingress",
+                    "$ref": "#/definitions/io.kruise.rollouts.v1alpha1.IngressInfo"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "TrafficRoutingInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.WorkloadInfo": {
+            "description": "WorkloadInfo indicates information of the workload, such as cloneset, deployment, advanced statefulset",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "Data indecates the spec of object ref",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name indicates the name of object ref, such as rollout name, workload name, ingress name, etc.",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "WorkloadInfo",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.rollouts.v1alpha1.WorkloadRef": {
+            "description": "WorkloadRef holds a references to the Kubernetes object",
+            "type": "object",
+            "required": [
+                "apiVersion",
+                "kind",
+                "name"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "API Version of the referent",
+                    "type": "string",
+                    "default": ""
+                },
+                "kind": {
+                    "description": "Kind of the referent",
+                    "type": "string",
+                    "default": ""
+                },
+                "name": {
+                    "description": "Name of the referent",
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "rollouts.kruise.io",
+                    "kind": "WorkloadRef",
+                    "version": "v1alpha1"
+                }
+            ]
+        }
+    }
+}

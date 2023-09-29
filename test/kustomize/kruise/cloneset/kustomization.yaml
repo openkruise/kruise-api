@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - cloneset.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps.kruise.io/v1alpha1
+    kind: CloneSet
+    metadata:
+      name: sample-data
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nginx
+              image: nginx:mainline
+              volumeMounts:
+                - name: log-volume
+                  mountPath: /var/log
+            - name: test
+              image: busybox:1.28
+              command: ["sleep", "999d"]
+      volumeClaimTemplates:
+        - metadata:
+            name: data-vol
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 20Gi
+        - metadata:
+            name: log-volume
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 20Gi

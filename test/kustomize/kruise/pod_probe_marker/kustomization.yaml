@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - pod_probe_marker.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps.kruise.io/v1alpha1
+    kind: PodProbeMarker
+    metadata:
+      name: game-server-probe
+      namespace: ns
+    spec:
+      probes:
+        - name: Idle
+          markerPolicy:
+            - state: Succeeded
+              annotations:
+                controller.kubernetes.io/pod-deletion-cost: '-10'
+            - state: Failed
+              labels:
+                gameserver-idle: 'false'
+              annotations:
+                controller.kubernetes.io/pod-deletion-cost: '10'
+          podConditionType: game.io/idle

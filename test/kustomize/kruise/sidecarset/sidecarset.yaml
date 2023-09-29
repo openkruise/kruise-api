@@ -1,0 +1,30 @@
+# this yaml is only used to test kustomize smp
+apiVersion: apps.kruise.io/v1alpha1
+kind: SidecarSet
+metadata:
+  name: test-sidecarset
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  updateStrategy:
+    type: RollingUpdate
+    maxUnavailable: 1
+  containers:
+    - name: sidecar1
+      image: centos:6.7
+      command: ["sleep", "999d"] # do nothing at all
+      volumeMounts:
+        - name: log-volume1
+          mountPath: /var/log
+    - name: sidecar2
+      image: centos:6.8
+      command: ["sleep", "999d"] # do nothing at all
+      volumeMounts:
+        - name: log-volume2
+          mountPath: /var/log
+  volumes: # this field will be merged into pod.spec.volumes
+    - name: log-volume1
+      emptyDir: {}
+    - name: log-volume2
+      emptyDir: {}

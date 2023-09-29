@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- uniteddeployment.yaml
+
+openapi:
+  path: ../../../../schema/openkruise_all_k8s_kustomize_schema.json
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps.kruise.io/v1alpha1
+  kind: UnitedDeployment
+  metadata:
+    name: sample-ud
+  spec:
+    template:
+      statefulSetTemplate:
+        spec:
+          template:
+            spec:
+              containers:
+                - name: busybox
+                  image: busybox:latest
+                  
+    topology:
+      subsets:
+        - name: subset-a
+          replicas: 1
+        - name: subset-b
+          replicas: 50%
+        - name: subset-c
+          nodeSelectorTerm:
+            matchExpressions:
+              - key: node
+                operator: In
+                values:
+                  - zone-c
+    updateStrategy:
+      manualUpdate:
+        partitions:
+          subset-c: 0

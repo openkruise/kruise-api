@@ -1,0 +1,33 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: AdvancedCronJob
+metadata:
+  name: acj-test
+spec:
+  schedule: "*/1 * * * *"
+  template:
+    broadcastJobTemplate:
+      spec:
+        template:
+          spec:
+            initContainers:
+              - name: job-1
+                image: alpine:3.11
+                command:
+                  - 'sh'
+                  - '-c'
+                  - >
+                    for i in 1 2 3;
+                    do
+                      echo "job-1 `date`";
+                      sleep 1s;
+                    done;
+                    echo code > /srv/input/code
+                volumeMounts:
+                  - mountPath: /srv/input/
+                    name: input
+            volumes:
+              - name: input
+                emptyDir: {}
+            completionPolicy:
+              type: Always
+              ttlSecondsAfterFinished: 30

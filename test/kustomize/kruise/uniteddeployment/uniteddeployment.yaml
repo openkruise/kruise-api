@@ -1,0 +1,52 @@
+apiVersion: apps.kruise.io/v1alpha1
+kind: UnitedDeployment
+metadata:
+  name: sample-ud
+spec:
+  replicas: 6
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: sample
+  template:
+    # statefulSetTemplate or advancedStatefulSetTemplate or cloneSetTemplate or deploymentTemplate
+    statefulSetTemplate:
+      metadata:
+        labels:
+          app: sample
+      spec:
+        selector:
+          matchLabels:
+            app: sample
+        template:
+          metadata:
+            labels:
+              app: sample
+          spec:
+            containers:
+              - name: nginx
+                image: nginx:alpine
+  topology:
+    subsets:
+      - name: subset-a
+        nodeSelectorTerm:
+          matchExpressions:
+            - key: node
+              operator: In
+              values:
+                - zone-a
+        replicas: 50%
+      - name: subset-b
+        nodeSelectorTerm:
+          matchExpressions:
+            - key: node
+              operator: In
+              values:
+                - zone-b
+        replicas: 50%
+  updateStrategy:
+    manualUpdate:
+      partitions:
+        subset-a: 0
+        subset-b: 0
+    type: Manual

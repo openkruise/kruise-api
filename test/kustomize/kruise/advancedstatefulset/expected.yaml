@@ -1,0 +1,38 @@
+apiVersion: apps.kruise.io/v1beta1
+kind: StatefulSet
+metadata:
+  name: sample
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sample
+  serviceName: fake-service
+  template:
+    metadata:
+      labels:
+        app: sample
+    spec:
+      containers:
+      - image: nginx:alpine
+        name: main
+        volumeMounts:
+        - mountPath: /var/log2
+          name: log-volume2
+        - mountPath: /var/log
+          name: log-volume1
+      - image: busybox:1.28
+        name: test
+      readinessGates:
+      - conditionType: InPlaceUpdateReady
+      volumes:
+      - emptyDir: {}
+        name: log-volume2
+      - emptyDir: {}
+        name: log-volume1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 2
+      podUpdatePolicy: InPlaceIfPossible
+    type: RollingUpdate
