@@ -27,7 +27,6 @@ import (
 	apps "github.com/openkruise/kruise-api/client/informers/externalversions/apps"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
 	policy "github.com/openkruise/kruise-api/client/informers/externalversions/policy"
-	rollouts "github.com/openkruise/kruise-api/client/informers/externalversions/rollouts"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -176,7 +175,6 @@ type SharedInformerFactory interface {
 
 	Apps() apps.Interface
 	Policy() policy.Interface
-	Rollouts() rollouts.Interface
 }
 
 func (f *sharedInformerFactory) Apps() apps.Interface {
@@ -185,8 +183,4 @@ func (f *sharedInformerFactory) Apps() apps.Interface {
 
 func (f *sharedInformerFactory) Policy() policy.Interface {
 	return policy.New(f, f.namespace, f.tweakListOptions)
-}
-
-func (f *sharedInformerFactory) Rollouts() rollouts.Interface {
-	return rollouts.New(f, f.namespace, f.tweakListOptions)
 }
