@@ -52,7 +52,7 @@ gen-schema-only:
 	go run cmd/gen-schema/main.go
 
 .PHONY: gen-openapi-schema
-gen-openapi-schema: gen-all-openapi gen-kruise-openapi gen-rollouts-openapi
+gen-openapi-schema: gen-all-openapi gen-kruise-openapi
 	go run cmd/gen-schema/main.go
 
 .PHONY: gen-all-openapi
