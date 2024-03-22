@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ func (c *FakePodUnavailableBudgets) UpdateStatus(ctx context.Context, podUnavail
 // Delete takes name of the podUnavailableBudget and deletes it. Returns an error if one occurs.
 func (c *FakePodUnavailableBudgets) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(podunavailablebudgetsResource, c.ns, name), &v1alpha1.PodUnavailableBudget{})
+		Invokes(testing.NewDeleteActionWithOptions(podunavailablebudgetsResource, c.ns, name, opts), &v1alpha1.PodUnavailableBudget{})
 
 	return err
 }

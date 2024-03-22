@@ -1021,6 +1021,11 @@
                     "description": "UpdateRevision, if not empty, indicates the latest revision of the CloneSet.",
                     "type": "string"
                 },
+                "updatedAvailableReplicas": {
+                    "description": "UpdatedAvailableReplicas is the number of Pods created by the CloneSet controller from the CloneSet version indicated by updateRevision and have a Ready Condition for at least minReadySeconds.",
+                    "type": "integer",
+                    "format": "int32"
+                },
                 "updatedReadyReplicas": {
                     "description": "UpdatedReadyReplicas is the number of Pods created by the CloneSet controller from the CloneSet version indicated by updateRevision and have a Ready Condition.",
                     "type": "integer",
@@ -1178,13 +1183,17 @@
             "type": "object",
             "properties": {
                 "exec": {
-                    "description": "One and only one of the following should be specified. Exec specifies the action to take.",
+                    "description": "Exec specifies the action to take.",
                     "$ref": "#/definitions/io.k8s.api.core.v1.ExecAction"
                 },
                 "failureThreshold": {
                     "description": "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
                     "type": "integer",
                     "format": "int32"
+                },
+                "grpc": {
+                    "description": "GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.",
+                    "$ref": "#/definitions/io.k8s.api.core.v1.GRPCAction"
                 },
                 "httpGet": {
                     "description": "HTTPGet specifies the http request to perform.",
@@ -1206,7 +1215,7 @@
                     "format": "int32"
                 },
                 "tcpSocket": {
-                    "description": "TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported",
+                    "description": "TCPSocket specifies an action involving a TCP port.",
                     "$ref": "#/definitions/io.k8s.api.core.v1.TCPSocketAction"
                 },
                 "terminationGracePeriodSeconds": {
@@ -2119,6 +2128,31 @@
                 }
             ]
         },
+        "io.kruise.apps.v1alpha1.FailedImageStatus": {
+            "description": "FailedImageStatus the state of ImagePullJob which has the failed nodes(status.Failed\u003e0)",
+            "type": "object",
+            "properties": {
+                "imagePullJob": {
+                    "description": "The name of ImagePullJob which has the failed nodes(status.Failed\u003e0)",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "The text prompt for job running status.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the image",
+                    "type": "string"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "FailedImageStatus",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
         "io.kruise.apps.v1alpha1.FailurePolicy": {
             "description": "FailurePolicy indicates the behavior of the job, when failed pod is found.",
             "type": "object",
@@ -2137,6 +2171,195 @@
                 {
                     "group": "apps.kruise.io",
                     "kind": "FailurePolicy",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.apps.v1alpha1.ImageListPullJob": {
+            "description": "ImageListPullJob is the Schema for the imagelistpulljobs API",
+            "type": "object",
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
+                },
+                "spec": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImageListPullJobSpec"
+                },
+                "status": {
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImageListPullJobStatus"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "ImageListPullJob",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.apps.v1alpha1.ImageListPullJobList": {
+            "description": "ImageListPullJobList contains a list of ImageListPullJob",
+            "type": "object",
+            "required": [
+                "items"
+            ],
+            "properties": {
+                "apiVersion": {
+                    "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImageListPullJob"
+                    }
+                },
+                "kind": {
+                    "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+                    "type": "string"
+                },
+                "metadata": {
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "ImageListPullJobList",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.apps.v1alpha1.ImageListPullJobSpec": {
+            "description": "ImageListPullJobSpec defines the desired state of ImageListPullJob",
+            "type": "object",
+            "required": [
+                "images",
+                "completionPolicy"
+            ],
+            "properties": {
+                "completionPolicy": {
+                    "description": "CompletionPolicy indicates the completion policy of the job. Default is Always CompletionPolicyType.",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.CompletionPolicy"
+                },
+                "imagePullPolicy": {
+                    "description": "Image pull policy. One of Always, IfNotPresent. Defaults to IfNotPresent.\n\nPossible enum values:\n - `\"Always\"` means that kruise-daemon always attempts to pull the latest image.\n - `\"IfNotPresent\"` means that kruise-daemon pulls if the image isn't present on disk.",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent"
+                    ]
+                },
+                "images": {
+                    "description": "Images is the image list to be pulled by the job",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "parallelism": {
+                    "description": "Parallelism is the requested parallelism, it can be set to any non-negative value. If it is unspecified, it defaults to 1. If it is specified as 0, then the Job is effectively paused until it is increased.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "podSelector": {
+                    "description": "PodSelector is a query over pods that should pull image on nodes of these pods. Mutually exclusive with Selector.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImagePullJobPodSelector"
+                },
+                "pullPolicy": {
+                    "description": "PullPolicy is an optional field to set parameters of the pulling task. If not specified, the system will use the default values.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.PullPolicy"
+                },
+                "pullSecrets": {
+                    "description": "ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling the image. If specified, these secrets will be passed to individual puller implementations for them to use.  For example, in the case of docker, only DockerConfig type secrets are honored.",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "sandboxConfig": {
+                    "description": "SandboxConfig support attach metadata in PullImage CRI interface during ImagePulljobs",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.SandboxConfig"
+                },
+                "selector": {
+                    "description": "Selector is a query over nodes that should match the job. nil to match all nodes.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImagePullJobNodeSelector"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "ImageListPullJobSpec",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
+        "io.kruise.apps.v1alpha1.ImageListPullJobStatus": {
+            "description": "ImageListPullJobStatus defines the observed state of ImageListPullJob",
+            "type": "object",
+            "required": [
+                "desired"
+            ],
+            "properties": {
+                "active": {
+                    "description": "The number of running ImagePullJobs which are acknowledged by the imagepulljob controller.",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "completed": {
+                    "description": "The number of ImagePullJobs which are finished",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "completionTime": {
+                    "description": "Represents time when the all the image pull job was completed. It is not guaranteed to be set in happens-before order across separate operations. It is represented in RFC3339 form and is in UTC.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "desired": {
+                    "description": "The desired number of ImagePullJobs, this is typically equal to the number of len(spec.Images).",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                },
+                "failedImageStatuses": {
+                    "description": "The status of ImagePullJob which has the failed nodes(status.Failed\u003e0) .",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/io.kruise.apps.v1alpha1.FailedImageStatus"
+                    }
+                },
+                "startTime": {
+                    "description": "Represents time when the job was acknowledged by the job controller. It is not guaranteed to be set in happens-before order across separate operations. It is represented in RFC3339 form and is in UTC.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "succeeded": {
+                    "description": "The number of image pull job which are finished and status.Succeeded==status.Desired.",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "ImageListPullJobStatus",
                     "version": "v1alpha1"
                 }
             ]
@@ -2293,6 +2516,14 @@
                     "type": "string",
                     "default": ""
                 },
+                "imagePullPolicy": {
+                    "description": "Image pull policy. One of Always, IfNotPresent. Defaults to IfNotPresent.\n\nPossible enum values:\n - `\"Always\"` means that kruise-daemon always attempts to pull the latest image.\n - `\"IfNotPresent\"` means that kruise-daemon pulls if the image isn't present on disk.",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent"
+                    ]
+                },
                 "parallelism": {
                     "description": "Parallelism is the requested parallelism, it can be set to any non-negative value. If it is unspecified, it defaults to 1. If it is specified as 0, then the Job is effectively paused until it is increased.",
                     "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
@@ -2312,6 +2543,10 @@
                         "type": "string",
                         "default": ""
                     }
+                },
+                "sandboxConfig": {
+                    "description": "SandboxConfig support attach metadata in PullImage CRI interface during ImagePulljobs",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.SandboxConfig"
                 },
                 "selector": {
                     "description": "Selector is a query over nodes that should match the job. nil to match all nodes.",
@@ -2386,6 +2621,62 @@
                 }
             ]
         },
+        "io.kruise.apps.v1alpha1.ImagePullJobTemplate": {
+            "type": "object",
+            "required": [
+                "completionPolicy"
+            ],
+            "properties": {
+                "completionPolicy": {
+                    "description": "CompletionPolicy indicates the completion policy of the job. Default is Always CompletionPolicyType.",
+                    "default": {},
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.CompletionPolicy"
+                },
+                "imagePullPolicy": {
+                    "description": "Image pull policy. One of Always, IfNotPresent. Defaults to IfNotPresent.\n\nPossible enum values:\n - `\"Always\"` means that kruise-daemon always attempts to pull the latest image.\n - `\"IfNotPresent\"` means that kruise-daemon pulls if the image isn't present on disk.",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent"
+                    ]
+                },
+                "parallelism": {
+                    "description": "Parallelism is the requested parallelism, it can be set to any non-negative value. If it is unspecified, it defaults to 1. If it is specified as 0, then the Job is effectively paused until it is increased.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "podSelector": {
+                    "description": "PodSelector is a query over pods that should pull image on nodes of these pods. Mutually exclusive with Selector.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImagePullJobPodSelector"
+                },
+                "pullPolicy": {
+                    "description": "PullPolicy is an optional field to set parameters of the pulling task. If not specified, the system will use the default values.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.PullPolicy"
+                },
+                "pullSecrets": {
+                    "description": "ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling the image. If specified, these secrets will be passed to individual puller implementations for them to use.  For example, in the case of docker, only DockerConfig type secrets are honored.",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "sandboxConfig": {
+                    "description": "SandboxConfig support attach metadata in PullImage CRI interface during ImagePulljobs",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.SandboxConfig"
+                },
+                "selector": {
+                    "description": "Selector is a query over nodes that should match the job. nil to match all nodes.",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.ImagePullJobNodeSelector"
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "ImagePullJobTemplate",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
         "io.kruise.apps.v1alpha1.ImageSpec": {
             "description": "ImageSpec defines the pulling spec of an image",
             "type": "object",
@@ -2400,6 +2691,10 @@
                         "default": {},
                         "$ref": "#/definitions/io.kruise.apps.v1alpha1.ReferenceObject"
                     }
+                },
+                "sandboxConfig": {
+                    "description": "SandboxConfig support attach metadata in PullImage CRI interface during ImagePulljobs",
+                    "$ref": "#/definitions/io.kruise.apps.v1alpha1.SandboxConfig"
                 },
                 "tags": {
                     "description": "Tags is a list of versions of this image",
@@ -2485,6 +2780,14 @@
                 "createdAt": {
                     "description": "Specifies the create time of this tag",
                     "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.Time"
+                },
+                "imagePullPolicy": {
+                    "description": "Image pull policy. One of Always, IfNotPresent. Defaults to IfNotPresent.\n\nPossible enum values:\n - `\"Always\"` means that kruise-daemon always attempts to pull the latest image.\n - `\"IfNotPresent\"` means that kruise-daemon pulls if the image isn't present on disk.",
+                    "type": "string",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent"
+                    ]
                 },
                 "ownerReferences": {
                     "description": "List of objects depended by this object. If this image is managed by a controller, then an entry in this list will point to this controller.",
@@ -3121,9 +3424,15 @@
             "required": [
                 "name",
                 "namespace",
-                "uid"
+                "uid",
+                "IP"
             ],
             "properties": {
+                "IP": {
+                    "description": "pod ip",
+                    "type": "string",
+                    "default": ""
+                },
                 "name": {
                     "description": "pod name",
                     "type": "string",
@@ -3812,6 +4121,33 @@
                 }
             ]
         },
+        "io.kruise.apps.v1alpha1.SandboxConfig": {
+            "description": "SandboxConfig support attach metadata in PullImage CRI interface during ImagePulljobs",
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "default": ""
+                    }
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "SandboxConfig",
+                    "version": "v1alpha1"
+                }
+            ]
+        },
         "io.kruise.apps.v1alpha1.ShareVolumePolicy": {
             "type": "object",
             "properties": {
@@ -3835,7 +4171,7 @@
             ],
             "properties": {
                 "args": {
-                    "description": "Arguments to the entrypoint. The docker image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
+                    "description": "Arguments to the entrypoint. The container image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -3843,7 +4179,7 @@
                     }
                 },
                 "command": {
-                    "description": "Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
+                    "description": "Entrypoint array. Not executed within a shell. The container image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -3869,7 +4205,7 @@
                     }
                 },
                 "image": {
-                    "description": "Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.",
+                    "description": "Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.",
                     "type": "string"
                 },
                 "imagePullPolicy": {
@@ -3894,7 +4230,7 @@
                     "type": "string"
                 },
                 "ports": {
-                    "description": "List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default \"0.0.0.0\" address inside a container will be accessible from the network. Cannot be updated.",
+                    "description": "List of ports to expose from the container. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default \"0.0.0.0\" address inside a container will be accessible from the network. Modifying this array with strategic merge patch may corrupt the data. For more information See https://github.com/kubernetes/kubernetes/issues/108255. Cannot be updated.",
                     "type": "array",
                     "items": {
                         "default": {},
@@ -4312,6 +4648,10 @@
                     "description": "Paused indicates that the SidecarSet is paused to update the injected pods, but it don't affect the webhook inject sidecar container into the newly created pods. default is false",
                     "type": "boolean"
                 },
+                "priorityStrategy": {
+                    "description": "Priorities are the rules for calculating the priority of updating pods. Each pod to be updated, will pass through these terms and get a sum of weights.",
+                    "$ref": "#/definitions/io.kruise.apps.pub.UpdatePriorityStrategy"
+                },
                 "scatterStrategy": {
                     "description": "ScatterStrategy defines the scatter rules to make pods been scattered when update. This will avoid pods with the same key-value to be updated in one batch. - Note that pods will be scattered after priority sort. So, although priority strategy and scatter strategy can be applied together, we suggest to use either one of them. - If scatterStrategy is used, we suggest to just use one term. Otherwise, the update order can be hard to understand.",
                     "type": "array",
@@ -4612,6 +4952,14 @@
                 "name"
             ],
             "properties": {
+                "maxReplicas": {
+                    "description": "Indicates the upper bounded replicas of the subset. MaxReplicas must be more than or equal to MinReplicas. MaxReplicas == nil means no limitation. Please ensure that at least one subset has empty MaxReplicas(no limitation) to avoid stuck scaling. Defaults to nil.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
+                "minReplicas": {
+                    "description": "Indicates the lower bounded replicas of the subset. MinReplicas must be more than or equal to 0 if it is set. Controller will prioritize satisfy minReplicas for each subset according to the order of Topology.Subsets. Defaults to 0.",
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
+                },
                 "name": {
                     "description": "Indicates subset name as a DNS_LABEL, which will be used to generate subset workload name prefix in the format '\u003cdeployment-name\u003e-\u003csubset-name\u003e-'. Name should be unique between all of the subsets under one UnitedDeployment.",
                     "type": "string",
@@ -4622,8 +4970,13 @@
                     "default": {},
                     "$ref": "#/definitions/io.k8s.api.core.v1.NodeSelectorTerm"
                 },
+                "patch": {
+                    "description": "Patch indicates patching to the templateSpec. Patch takes precedence over other fields If the Patch also modifies the Replicas, NodeSelectorTerm or Tolerations, use value in the Patch",
+                    "default": {},
+                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.runtime.RawExtension"
+                },
                 "replicas": {
-                    "description": "Indicates the number of the pod to be created under this subset. Replicas could also be percentage like '10%', which means 10% of UnitedDeployment replicas of pods will be distributed under this subset. If nil, the number of replicas in this subset is determined by controller. Controller will try to keep all the subsets with nil replicas have average pods.",
+                    "description": "Indicates the number of the pod to be created under this subset. Replicas could also be percentage like '10%', which means 10% of UnitedDeployment replicas of pods will be distributed under this subset. If nil, the number of replicas in this subset is determined by controller. Controller will try to keep all the subsets with nil replicas have average pods. Replicas and MinReplicas/MaxReplicas are mutually exclusive in a UnitedDeployment.",
                     "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
                 },
                 "tolerations": {
@@ -4952,6 +5305,10 @@
                     "description": "CurrentRevision, if not empty, indicates the current version of the UnitedDeployment.",
                     "type": "string",
                     "default": ""
+                },
+                "labelSelector": {
+                    "description": "LabelSelector is label selectors for query over pods that should match the replica count used by HPA.",
+                    "type": "string"
                 },
                 "observedGeneration": {
                     "description": "ObservedGeneration is the most recent generation observed for this UnitedDeployment. It corresponds to the UnitedDeployment's generation, which is updated on mutation by the API Server.",
@@ -5308,6 +5665,17 @@
                     "items": {
                         "default": {},
                         "$ref": "#/definitions/io.kruise.apps.v1alpha1.WorkloadSpreadSubsetStatus"
+                    }
+                },
+                "versionedSubsetStatuses": {
+                    "description": "VersionedSubsetStatuses is to solve rolling-update problems, where the creation of new-version pod may be earlier than deletion of old-version pod. We have to calculate the pod subset distribution for each version.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "default": {},
+                            "$ref": "#/definitions/io.kruise.apps.v1alpha1.WorkloadSpreadSubsetStatus"
+                        }
                     }
                 }
             },
@@ -5760,6 +6128,11 @@
                 "updateRevision": {
                     "description": "updateRevision, if not empty, indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)",
                     "type": "string"
+                },
+                "updatedAvailableReplicas": {
+                    "description": "updatedAvailableReplicas is the number of updated Pods created by the StatefulSet controller that have a Ready condition for atleast minReadySeconds.",
+                    "type": "integer",
+                    "format": "int32"
                 },
                 "updatedReadyReplicas": {
                     "description": "updatedReadyReplicas is the number of updated Pods created by the StatefulSet controller that have a Ready Condition.",

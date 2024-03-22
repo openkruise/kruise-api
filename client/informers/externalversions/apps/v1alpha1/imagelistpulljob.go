@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// ContainerRecreateRequestInformer provides access to a shared informer and lister for
-// ContainerRecreateRequests.
-type ContainerRecreateRequestInformer interface {
+// ImageListPullJobInformer provides access to a shared informer and lister for
+// ImageListPullJobs.
+type ImageListPullJobInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.ContainerRecreateRequestLister
+	Lister() v1alpha1.ImageListPullJobLister
 }
 
-type containerRecreateRequestInformer struct {
+type imageListPullJobInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewContainerRecreateRequestInformer constructs a new informer for ContainerRecreateRequest type.
+// NewImageListPullJobInformer constructs a new informer for ImageListPullJob type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewContainerRecreateRequestInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredContainerRecreateRequestInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewImageListPullJobInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredImageListPullJobInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredContainerRecreateRequestInformer constructs a new informer for ContainerRecreateRequest type.
+// NewFilteredImageListPullJobInformer constructs a new informer for ImageListPullJob type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredContainerRecreateRequestInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredImageListPullJobInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().ContainerRecreateRequests(namespace).List(context.TODO(), options)
+				return client.AppsV1alpha1().ImageListPullJobs(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.AppsV1alpha1().ContainerRecreateRequests(namespace).Watch(context.TODO(), options)
+				return client.AppsV1alpha1().ImageListPullJobs(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.ContainerRecreateRequest{},
+		&appsv1alpha1.ImageListPullJob{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *containerRecreateRequestInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredContainerRecreateRequestInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *imageListPullJobInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredImageListPullJobInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *containerRecreateRequestInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.ContainerRecreateRequest{}, f.defaultInformer)
+func (f *imageListPullJobInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&appsv1alpha1.ImageListPullJob{}, f.defaultInformer)
 }
 
-func (f *containerRecreateRequestInformer) Lister() v1alpha1.ContainerRecreateRequestLister {
-	return v1alpha1.NewContainerRecreateRequestLister(f.Informer().GetIndexer())
+func (f *imageListPullJobInformer) Lister() v1alpha1.ImageListPullJobLister {
+	return v1alpha1.NewImageListPullJobLister(f.Informer().GetIndexer())
 }

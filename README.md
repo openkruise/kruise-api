@@ -4,16 +4,19 @@ Schema of the API types that are served by Kruise.
 
 ## Purpose
 
-This library is the canonical location of the Kruise API definition.
+This library is the canonical location of the Kruise API definition and client.
 
 We recommend using the go types in this repo. You may serialize them directly to JSON.
 
-## Compatibility matrix
+## What's included
+* The `client` package contains the clientset to access Kruise API.
+* The `apps` and `policy` packages contain api definition in go
+* The `schema` directory contains  corresponding openapi schema of kruise source 
 
-| Kubernetes Version in your Project | Import Kruise-api < v0.10  | Import Kruise-api >= v0.10 |
-|------------------------------------|----------------------------|----------------------------|
-| < 1.18                             | v0.x.y (x <= 9)            | v0.x.y-legacy (x >= 10)    |
-| >= 1.18                            | v0.x.y-1.18 (7 <= x <= 9)  | v0.x.y (x >= 10)           |
+## Versioning
+For each `v1.x.y` Kruise release, the corresponding kruise-api will `v1.x.z`. 
+
+Bugfixes in kruise-api will result in the patch version (third digit `z`) changing. PRs that are cherry-picked into an older Kruise release branch will result in an update to the corresponding branch in client-go, with a corresponding new tag changing the patch version.
 
 ## Where does it come from?
 
@@ -32,7 +35,7 @@ go get github.com/openkruise/kruise-api@latest
 To get a specific version, use go1.11+ and fetch the desired version using the `go get` command. For example:
 
 ```
-go get github.com/openkruise/kruise-api@v1.5.0
+go get github.com/openkruise/kruise-api@v1.6.0
 ```
 
 ### How to use it

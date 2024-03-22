@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().DaemonSets().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("ephemeraljobs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().EphemeralJobs().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("imagelistpulljobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ImageListPullJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("imagepulljobs"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().ImagePullJobs().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("nodeimages"):

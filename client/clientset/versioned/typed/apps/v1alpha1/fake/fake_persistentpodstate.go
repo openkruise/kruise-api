@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ func (c *FakePersistentPodStates) UpdateStatus(ctx context.Context, persistentPo
 // Delete takes name of the persistentPodState and deletes it. Returns an error if one occurs.
 func (c *FakePersistentPodStates) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(persistentpodstatesResource, c.ns, name), &v1alpha1.PersistentPodState{})
+		Invokes(testing.NewDeleteActionWithOptions(persistentpodstatesResource, c.ns, name, opts), &v1alpha1.PersistentPodState{})
 
 	return err
 }

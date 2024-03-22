@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -65,6 +65,14 @@ type EphemeralJobListerExpansion interface{}
 // EphemeralJobNamespaceListerExpansion allows custom methods to be added to
 // EphemeralJobNamespaceLister.
 type EphemeralJobNamespaceListerExpansion interface{}
+
+// ImageListPullJobListerExpansion allows custom methods to be added to
+// ImageListPullJobLister.
+type ImageListPullJobListerExpansion interface{}
+
+// ImageListPullJobNamespaceListerExpansion allows custom methods to be added to
+// ImageListPullJobNamespaceLister.
+type ImageListPullJobNamespaceListerExpansion interface{}
 
 // ImagePullJobListerExpansion allows custom methods to be added to
 // ImagePullJobLister.
