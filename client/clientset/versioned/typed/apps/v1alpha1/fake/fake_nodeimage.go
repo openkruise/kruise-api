@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ func (c *FakeNodeImages) UpdateStatus(ctx context.Context, nodeImage *v1alpha1.N
 // Delete takes name of the nodeImage and deletes it. Returns an error if one occurs.
 func (c *FakeNodeImages) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(nodeimagesResource, name), &v1alpha1.NodeImage{})
+		Invokes(testing.NewRootDeleteActionWithOptions(nodeimagesResource, name, opts), &v1alpha1.NodeImage{})
 	return err
 }
 

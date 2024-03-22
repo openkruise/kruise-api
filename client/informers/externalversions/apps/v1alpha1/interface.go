@@ -1,5 +1,5 @@
 /*
-Copyright 2022 The Kruise Authors.
+Copyright 2024 The Kruise Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ type Interface interface {
 	DaemonSets() DaemonSetInformer
 	// EphemeralJobs returns a EphemeralJobInformer.
 	EphemeralJobs() EphemeralJobInformer
+	// ImageListPullJobs returns a ImageListPullJobInformer.
+	ImageListPullJobs() ImageListPullJobInformer
 	// ImagePullJobs returns a ImagePullJobInformer.
 	ImagePullJobs() ImagePullJobInformer
 	// NodeImages returns a NodeImageInformer.
@@ -97,6 +99,11 @@ func (v *version) DaemonSets() DaemonSetInformer {
 // EphemeralJobs returns a EphemeralJobInformer.
 func (v *version) EphemeralJobs() EphemeralJobInformer {
 	return &ephemeralJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+}
+
+// ImageListPullJobs returns a ImageListPullJobInformer.
+func (v *version) ImageListPullJobs() ImageListPullJobInformer {
+	return &imageListPullJobInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 
 // ImagePullJobs returns a ImagePullJobInformer.
