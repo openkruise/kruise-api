@@ -1192,7 +1192,7 @@
                     "format": "int32"
                 },
                 "grpc": {
-                    "description": "GRPC specifies an action involving a GRPC port. This is a beta field and requires enabling GRPCContainerProbe feature gate.",
+                    "description": "GRPC specifies an action involving a GRPC port.",
                     "$ref": "#/definitions/io.k8s.api.core.v1.GRPCAction"
                 },
                 "httpGet": {
@@ -4045,7 +4045,7 @@
             "type": "object",
             "properties": {
                 "maxSurge": {
-                    "description": "The maximum number of nodes with an existing available DaemonSet pod that can have an updated DaemonSet pod during during an update. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up to a minimum of 1. Default value is 0. Example: when this is set to 30%, at most 30% of the total number of nodes that should be running the daemon pod (i.e. status.desiredNumberScheduled) can have their a new pod created before the old pod is marked as deleted. The update starts by launching new pods on 30% of nodes. Once an updated pod is available (Ready for at least minReadySeconds) the old DaemonSet pod on that node is marked deleted. If the old pod becomes unavailable for any reason (Ready transitions to false, is evicted, or is drained) an updated pod is immediatedly created on that node without considering surge limits. Allowing surge implies the possibility that the resources consumed by the daemonset on any given node can double if the readiness check fails, and so resource intensive daemonsets should take into account that they may cause evictions during disruption. This is beta field and enabled/disabled by DaemonSetUpdateSurge feature gate.",
+                    "description": "The maximum number of nodes with an existing available DaemonSet pod that can have an updated DaemonSet pod during during an update. Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up to a minimum of 1. Default value is 0. Example: when this is set to 30%, at most 30% of the total number of nodes that should be running the daemon pod (i.e. status.desiredNumberScheduled) can have their a new pod created before the old pod is marked as deleted. The update starts by launching new pods on 30% of nodes. Once an updated pod is available (Ready for at least minReadySeconds) the old DaemonSet pod on that node is marked deleted. If the old pod becomes unavailable for any reason (Ready transitions to false, is evicted, or is drained) an updated pod is immediately created on that node without considering surge limits. Allowing surge implies the possibility that the resources consumed by the daemonset on any given node can double if the readiness check fails, and so resource intensive daemonsets should take into account that they may cause evictions during disruption. This is beta field and enabled/disabled by DaemonSetUpdateSurge feature gate.",
                     "$ref": "#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString"
                 },
                 "maxUnavailable": {
@@ -4248,10 +4248,23 @@
                     "description": "Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
                     "$ref": "#/definitions/io.k8s.api.core.v1.Probe"
                 },
+                "resizePolicy": {
+                    "description": "Resources resize policy for the container.",
+                    "type": "array",
+                    "items": {
+                        "default": {},
+                        "$ref": "#/definitions/io.k8s.api.core.v1.ContainerResizePolicy"
+                    },
+                    "x-kubernetes-list-type": "atomic"
+                },
                 "resources": {
                     "description": "Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
                     "default": {},
                     "$ref": "#/definitions/io.k8s.api.core.v1.ResourceRequirements"
+                },
+                "restartPolicy": {
+                    "description": "RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is \"Always\". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as \"Always\" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy \"Always\" will be shut down. This lifecycle differs from normal init containers and is often referred to as a \"sidecar\" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.",
+                    "type": "string"
                 },
                 "securityContext": {
                     "description": "SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
@@ -5397,84 +5410,6 @@
                 }
             ]
         },
-        "io.kruise.apps.v1alpha1.UpdatePriorityOrderTerm": {
-            "description": "UpdatePriorityOrder defines order priority.",
-            "type": "object",
-            "required": [
-                "orderedKey"
-            ],
-            "properties": {
-                "orderedKey": {
-                    "description": "Calculate priority by value of this key. Values of this key, will be sorted by GetInt(val). GetInt method will find the last int in value, such as getting 5 in value '5', getting 10 in value 'sts-10'.",
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "x-kubernetes-group-version-kind": [
-                {
-                    "group": "apps.kruise.io",
-                    "kind": "UpdatePriorityOrderTerm",
-                    "version": "v1alpha1"
-                }
-            ]
-        },
-        "io.kruise.apps.v1alpha1.UpdatePriorityStrategy": {
-            "description": "UpdatePriorityStrategy is the strategy to define priority for pods update. Only one of orderPriority and weightPriority can be set.",
-            "type": "object",
-            "properties": {
-                "orderPriority": {
-                    "description": "Order priority terms, pods will be sorted by the value of orderedKey. For example: ``` orderPriority: - orderedKey: key1 - orderedKey: key2 ``` First, all pods which have key1 in labels will be sorted by the value of key1. Then, the left pods which have no key1 but have key2 in labels will be sorted by the value of key2 and put behind those pods have key1.",
-                    "type": "array",
-                    "items": {
-                        "default": {},
-                        "$ref": "#/definitions/io.kruise.apps.v1alpha1.UpdatePriorityOrderTerm"
-                    }
-                },
-                "weightPriority": {
-                    "description": "Weight priority terms, pods will be sorted by the sum of all terms weight.",
-                    "type": "array",
-                    "items": {
-                        "default": {},
-                        "$ref": "#/definitions/io.kruise.apps.v1alpha1.UpdatePriorityWeightTerm"
-                    }
-                }
-            },
-            "x-kubernetes-group-version-kind": [
-                {
-                    "group": "apps.kruise.io",
-                    "kind": "UpdatePriorityStrategy",
-                    "version": "v1alpha1"
-                }
-            ]
-        },
-        "io.kruise.apps.v1alpha1.UpdatePriorityWeightTerm": {
-            "description": "UpdatePriorityWeightTerm defines weight priority.",
-            "type": "object",
-            "required": [
-                "weight",
-                "matchSelector"
-            ],
-            "properties": {
-                "matchSelector": {
-                    "description": "MatchSelector is used to select by pod's labels.",
-                    "default": {},
-                    "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector"
-                },
-                "weight": {
-                    "description": "Weight associated with matching the corresponding matchExpressions, in the range 1-100.",
-                    "type": "integer",
-                    "format": "int32",
-                    "default": 0
-                }
-            },
-            "x-kubernetes-group-version-kind": [
-                {
-                    "group": "apps.kruise.io",
-                    "kind": "UpdatePriorityWeightTerm",
-                    "version": "v1alpha1"
-                }
-            ]
-        },
         "io.kruise.apps.v1alpha1.UpdateScatterTerm": {
             "type": "object",
             "required": [
@@ -5946,6 +5881,25 @@
                 }
             ]
         },
+        "io.kruise.apps.v1beta1.StatefulSetOrdinals": {
+            "description": "StatefulSetOrdinals describes the policy used for replica ordinal assignment in this StatefulSet.",
+            "type": "object",
+            "properties": {
+                "start": {
+                    "description": "start is the number representing the first replica's index. It may be used to number replicas from an alternate index (eg: 1-indexed) over the default 0-indexed names, or to orchestrate progressive movement of replicas from one StatefulSet to another. If set, replica indices will be in the range:\n  [.spec.ordinals.start, .spec.ordinals.start + .spec.replicas).\nIf unset, defaults to 0. Replica indices will be in the range:\n  [0, .spec.replicas).",
+                    "type": "integer",
+                    "format": "int32",
+                    "default": 0
+                }
+            },
+            "x-kubernetes-group-version-kind": [
+                {
+                    "group": "apps.kruise.io",
+                    "kind": "StatefulSetOrdinals",
+                    "version": "v1beta1"
+                }
+            ]
+        },
         "io.kruise.apps.v1beta1.StatefulSetPersistentVolumeClaimRetentionPolicy": {
             "description": "StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs created from the StatefulSet VolumeClaimTemplates.",
             "type": "object",
@@ -5995,6 +5949,10 @@
                 "lifecycle": {
                     "description": "Lifecycle defines the lifecycle hooks for Pods pre-delete, in-place update.",
                     "$ref": "#/definitions/io.kruise.apps.pub.Lifecycle"
+                },
+                "ordinals": {
+                    "description": "ordinals controls the numbering of replica indices in a StatefulSet. The default ordinals behavior assigns a \"0\" index to the first replica and increments the index by one for each additional replica requested. Using the ordinals field requires the StatefulSetStartOrdinal feature gate to be enabled, which is beta.",
+                    "$ref": "#/definitions/io.kruise.apps.v1beta1.StatefulSetOrdinals"
                 },
                 "persistentVolumeClaimRetentionPolicy": {
                     "description": "PersistentVolumeClaimRetentionPolicy describes the policy used for PVCs created from the StatefulSet VolumeClaimTemplates. This requires the StatefulSetAutoDeletePVC feature gate to be enabled, which is alpha.",
