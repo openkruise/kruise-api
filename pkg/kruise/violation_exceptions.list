@@ -49,8 +49,6 @@ API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1al
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,Topology,Subsets
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,TransferEnvVar,EnvNames
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,UnitedDeploymentStatus,Conditions
-API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,UpdatePriorityStrategy,OrderPriority
-API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,UpdatePriorityStrategy,WeightPriority
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,WorkloadSpreadSpec,Subsets
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,WorkloadSpreadStatus,SubsetStatuses
 API rule violation: list_type_missing,github.com/openkruise/kruise-api/apps/v1alpha1,WorkloadSpreadSubset,PreferredNodeSelectorTerms

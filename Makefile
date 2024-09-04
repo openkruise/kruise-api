@@ -17,10 +17,10 @@ generate: controller-gen
 
 CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
 controller-gen: ## Download controller-gen locally if necessary.
-ifeq ("$(shell $(CONTROLLER_GEN) --version 2> /dev/null)", "Version: v0.11.0")
+ifeq ("$(shell $(CONTROLLER_GEN) --version 2> /dev/null)", "Version: v0.14.0")
 else
 	rm -rf $(CONTROLLER_GEN)
-	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.11.0)
+	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.14.0)
 endif
 
 OPENAPI_GEN = $(shell pwd)/bin/openapi-gen
