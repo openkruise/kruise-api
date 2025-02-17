@@ -216,7 +216,8 @@ type SidecarSetInjectRevision struct {
 	// + optional
 	RevisionName *string `json:"revisionName,omitempty"`
 	// Policy describes the behavior of revision injection.
-	// Defaults to Always.
+	// +kubebuilder:validation:Enum=Always;Partial;
+	// +kubebuilder:default=Always
 	Policy SidecarSetInjectRevisionPolicy `json:"policy,omitempty"`
 }
 
@@ -226,9 +227,15 @@ const (
 	// AlwaysSidecarSetInjectRevisionPolicy means the SidecarSet will always inject
 	// the specific revision to Pods when pod creating, except matching UpdateStrategy.Selector.
 	AlwaysSidecarSetInjectRevisionPolicy SidecarSetInjectRevisionPolicy = "Always"
-	// PartitionBasedSidecarSetInjectRevisionPolicy means the SidecarSet will inject the
-	// specific or the latest revision according to Partition.
-	//PartitionBasedSidecarSetInjectRevisionPolicy SidecarSetInjectRevisionPolicy = "PartitionBased"
+
+	// PartialSidecarSetInjectRevisionPolicy means the SidecarSet will inject the specific or the latest revision according to UpdateStrategy.
+	//
+	// If UpdateStrategy.Pause is not true, only when a newly created Pod is **not** selected by the Selector explicitly
+	// configured in `UpdateStrategy` will it be injected with the specified version of the Sidecar.
+	// Under all other conditions, newly created Pods have a probability of being injected with the latest Sidecar,
+	// where the probability is `1 - UpdateStrategy.Partition`.
+	// If `Partition` is not a percentage or is not configured, its value is considered to be 0%.
+	PartialSidecarSetInjectRevisionPolicy SidecarSetInjectRevisionPolicy = "Partial"
 )
 
 // SidecarSetUpdateStrategy indicates the strategy that the SidecarSet
@@ -242,11 +249,15 @@ type SidecarSetUpdateStrategy struct {
 	Type SidecarSetUpdateStrategyType `json:"type,omitempty"`
 
 	// Paused indicates that the SidecarSet is paused to update the injected pods,
-	// but it don't affect the webhook inject sidecar container into the newly created pods.
-	// default is false
+	// For the impact on the injection behavior for newly created Pods, please refer to the comments of Selector.
 	Paused bool `json:"paused,omitempty"`
 
 	// If selector is not nil, this upgrade will only update the selected pods.
+	//
+	// Starting from Kruise 1.8.0, the updateStrategy.Selector affects the version of the Sidecar container
+	// injected into newly created Pods by a SidecarSet configured with an injectionStrategy.
+	// In most cases, all newly created Pods are injected with the specified Sidecar version as configured in injectionStrategy.revision,
+	// which is consistent with previous versions.
 	Selector *metav1.LabelSelector `json:"selector,omitempty"`
 
 	// Partition is the desired number of pods in old revisions. It means when partition
