@@ -17,18 +17,50 @@ limitations under the License.
 package v1beta1
 
 import (
+	appspub "github.com/openkruise/kruise-api/apps/pub"
 	apps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-
-	appspub "github.com/openkruise/kruise-api/apps/pub"
 )
 
 const (
 	// MaxMinReadySeconds is the max value of MinReadySeconds
 	MaxMinReadySeconds = 300
 )
+
+// VolumeClaimUpdateStrategyType defines the update strategy types for volume claims.
+// It is an enumerated type that provides two different update strategies.
+// +enum
+type VolumeClaimUpdateStrategyType string
+
+const (
+	// OnPodRollingUpdateVolumeClaimUpdateStrategyType indicates that volume claim updates are triggered when associated Pods undergo rolling updates.
+	// This strategy ensures that storage availability and integrity are maintained during the update process.
+	OnPodRollingUpdateVolumeClaimUpdateStrategyType VolumeClaimUpdateStrategyType = "OnPodRollingUpdate"
+
+	// OnPVCDeleteVolumeClaimUpdateStrategyType indicates that updates are triggered when a Persistent Volume Claim (PVC) is deleted.
+	// This strategy places full control of the update timing in the hands of the user, typically executed after ensuring data has been backed up or there are no data security concerns,
+	// allowing for storage resource management that aligns with specific user requirements and security policies.
+	OnPVCDeleteVolumeClaimUpdateStrategyType VolumeClaimUpdateStrategyType = "OnDelete"
+)
+
+// VolumeClaimStatus describes the status of a volume claim template.
+// It provides details about the compatibility and readiness of the volume claim.
+type VolumeClaimStatus struct {
+	// VolumeClaimName is the name of the volume claim.
+	// This is a unique identifier used to reference a specific volume claim.
+	VolumeClaimName string `json:"volumeClaimName"`
+	// CompatibleReplicas is the number of replicas currently compatible with the volume claim.
+	// It indicates how many replicas can function properly, being compatible with this volume claim.
+	// Compatibility is determined by whether the PVC spec storage requests are greater than or equal to the template spec storage requests
+	CompatibleReplicas int32 `json:"compatibleReplicas"`
+	// CompatibleReadyReplicas is the number of replicas that are both ready and compatible with the volume claim.
+	// It highlights that these replicas are not only compatible but also ready to be put into service immediately.
+	// Compatibility is determined by whether the pvc spec storage requests are greater than or equal to the template spec storage requests
+	// The "ready" status is determined by whether the PVC status capacity is greater than or equal to the PVC spec storage requests.
+	CompatibleReadyReplicas int32 `json:"compatibleReadyReplicas"`
+}
 
 // StatefulSetUpdateStrategy indicates the strategy that the StatefulSet
 // controller will use to perform updates. It includes any additional parameters
@@ -43,11 +75,18 @@ type StatefulSetUpdateStrategy struct {
 	RollingUpdate *RollingUpdateStatefulSetStrategy `json:"rollingUpdate,omitempty"`
 }
 
+// VolumeClaimUpdateStrategy defines the strategy for updating volume claims.
+// This structure is used to control how updates to PersistentVolumeClaims are handled during pod rolling updates or PersistentVolumeClaim deletions.
+type VolumeClaimUpdateStrategy struct {
+	// Type specifies the type of update strategy, possible values include:
+	// OnPodRollingUpdateVolumeClaimUpdateStrategyType: Apply the update strategy during pod rolling updates.
+	// OnPVCDeleteVolumeClaimUpdateStrategyType: Apply the update strategy when a PersistentVolumeClaim is deleted.
+	Type VolumeClaimUpdateStrategyType `json:"type,omitempty"`
+}
+
 // RollingUpdateStatefulSetStrategy is used to communicate parameter for RollingUpdateStatefulSetStrategyType.
 type RollingUpdateStatefulSetStrategy struct {
-	// Partition indicates the ordinal at which the StatefulSet should be partitioned by default.
-	// But if unorderedUpdate has been set:
-	//   - Partition indicates the number of pods with non-updated revisions when rolling update.
+	// Partition indicates the number of pods the StatefulSet should be partitioned by default.
 	//   - It means controller will update $(replicas - partition) number of pod.
 	// Default value is 0.
 	// +optional
@@ -129,7 +168,7 @@ const (
 )
 
 // StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
-// created from the StatefulSet VolumeClaimTemplates.
+// created from the StatefulSet VolumeClaims.
 type StatefulSetPersistentVolumeClaimRetentionPolicy struct {
 	// WhenDeleted specifies what happens to PVCs created from StatefulSet
 	// VolumeClaimTemplates when the StatefulSet is deleted. The default policy
@@ -194,6 +233,11 @@ type StatefulSetSpec struct {
 	// +kubebuilder:validation:Schemaless
 	VolumeClaimTemplates []v1.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty"`
 
+	// VolumeClaimUpdateStrategy specifies the strategy for updating VolumeClaimTemplates within a StatefulSet.
+	// This field is currently only effective if the StatefulSetAutoResizePVCGate is enabled.
+	// +optional
+	VolumeClaimUpdateStrategy VolumeClaimUpdateStrategy `json:"volumeClaimUpdateStrategy,omitempty"`
+
 	// serviceName is the name of the service that governs this StatefulSet.
 	// This service must exist before the StatefulSet, and is responsible for
 	// the network identity of the set. Pods get DNS/hostnames that follow the
@@ -230,7 +274,8 @@ type StatefulSetSpec struct {
 	//   Then controller will delete Pod-1 and create Pod-3 (existing Pods will be [0, 2, 3])
 	// - If you just want to delete Pod-1, you should set spec.reserveOrdinal to [1] and spec.replicas to 2.
 	//   Then controller will delete Pod-1 (existing Pods will be [0, 2])
-	ReserveOrdinals []int `json:"reserveOrdinals,omitempty"`
+	// You can also use ranges along with numbers, such as [1, 3-5], which is a shortcut for [1, 3, 4, 5].
+	ReserveOrdinals []intstr.IntOrString `json:"reserveOrdinals,omitempty"`
 
 	// Lifecycle defines the lifecycle hooks for Pods pre-delete, in-place update.
 	Lifecycle *appspub.Lifecycle `json:"lifecycle,omitempty"`
@@ -317,6 +362,12 @@ type StatefulSetStatus struct {
 
 	// LabelSelector is label selectors for query over pods that should match the replica count used by HPA.
 	LabelSelector string `json:"labelSelector,omitempty"`
+
+	// VolumeClaims represents the status of compatibility between existing PVCs
+	// and their respective templates. It tracks whether the PersistentVolumeClaims have been updated
+	// to match any changes made to the volumeClaimTemplates, ensuring synchronization
+	// between the defined templates and the actual PersistentVolumeClaims in use.
+	VolumeClaims []VolumeClaimStatus `json:"volumeClaims,omitempty"`
 }
 
 // These are valid conditions of a statefulset.

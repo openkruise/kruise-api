@@ -9,13 +9,29 @@ fi
 set -e
 TMP_DIR=$(mktemp -d)
 mkdir -p "${TMP_DIR}"/src/github.com/openkruise/kruise-api
-cp -r ./{apps,policy,hack,vendor,go.mod,.git} "${TMP_DIR}"/src/github.com/openkruise/kruise-api/
+cp -r ./{apps,policy,hack,utils,vendor,go.mod,.git} "${TMP_DIR}"/src/github.com/openkruise/kruise-api/
+
 chmod +x "${TMP_DIR}"/src/github.com/openkruise/kruise-api/vendor/k8s.io/code-generator/generate-internal-groups.sh
 echo "tmp_dir: ${TMP_DIR}"
 
-(cd "${TMP_DIR}"/src/github.com/openkruise/kruise-api; \
-    GOPATH=${TMP_DIR} GO111MODULE=on /bin/bash vendor/k8s.io/code-generator/generate-groups.sh client,deepcopy,informer,lister \
-    github.com/openkruise/kruise-api/client github.com/openkruise/kruise-api "apps:v1alpha1 apps:v1beta1 policy:v1alpha1" -h ./hack/boilerplate.go.txt)
+SCRIPT_ROOT="${TMP_DIR}"/src/github.com/openkruise/kruise-api
+CODEGEN_PKG=${CODEGEN_PKG:-"${SCRIPT_ROOT}/vendor/k8s.io/code-generator"}
+
+echo "source ${CODEGEN_PKG}/kube_codegen.sh"
+source "${CODEGEN_PKG}/kube_codegen.sh"
+
+echo "gen_helpers"
+GOPATH=${TMP_DIR} GO111MODULE=off kube::codegen::gen_helpers \
+    --boilerplate "${SCRIPT_ROOT}/hack/boilerplate.go.txt" \
+    "${SCRIPT_ROOT}"
+
+echo "gen_client"
+GOPATH=${TMP_DIR} GO111MODULE=off kube::codegen::gen_client \
+    --with-watch \
+    --output-dir "${SCRIPT_ROOT}/client" \
+    --output-pkg "github.com/openkruise/kruise-api/client" \
+    --boilerplate "${SCRIPT_ROOT}/hack/boilerplate.go.txt" \
+    "${SCRIPT_ROOT}"
 
 mkdir -p ./client
 rm -rf ./client/{clientset,informers,listers}
