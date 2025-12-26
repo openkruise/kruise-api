@@ -21,7 +21,7 @@ package v1beta1
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"github.com/openkruise/kruise-api/utils/scheme"
+	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
 var (

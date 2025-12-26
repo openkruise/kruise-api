@@ -18,6 +18,54 @@ limitations under the License.
 
 package v1beta1
 
+// AdvancedCronJobListerExpansion allows custom methods to be added to
+// AdvancedCronJobLister.
+type AdvancedCronJobListerExpansion interface{}
+
+// AdvancedCronJobNamespaceListerExpansion allows custom methods to be added to
+// AdvancedCronJobNamespaceLister.
+type AdvancedCronJobNamespaceListerExpansion interface{}
+
+// BroadcastJobListerExpansion allows custom methods to be added to
+// BroadcastJobLister.
+type BroadcastJobListerExpansion interface{}
+
+// BroadcastJobNamespaceListerExpansion allows custom methods to be added to
+// BroadcastJobNamespaceLister.
+type BroadcastJobNamespaceListerExpansion interface{}
+
+// DaemonSetListerExpansion allows custom methods to be added to
+// DaemonSetLister.
+type DaemonSetListerExpansion interface{}
+
+// DaemonSetNamespaceListerExpansion allows custom methods to be added to
+// DaemonSetNamespaceLister.
+type DaemonSetNamespaceListerExpansion interface{}
+
+// ImageListPullJobListerExpansion allows custom methods to be added to
+// ImageListPullJobLister.
+type ImageListPullJobListerExpansion interface{}
+
+// ImageListPullJobNamespaceListerExpansion allows custom methods to be added to
+// ImageListPullJobNamespaceLister.
+type ImageListPullJobNamespaceListerExpansion interface{}
+
+// ImagePullJobListerExpansion allows custom methods to be added to
+// ImagePullJobLister.
+type ImagePullJobListerExpansion interface{}
+
+// ImagePullJobNamespaceListerExpansion allows custom methods to be added to
+// ImagePullJobNamespaceLister.
+type ImagePullJobNamespaceListerExpansion interface{}
+
+// NodeImageListerExpansion allows custom methods to be added to
+// NodeImageLister.
+type NodeImageListerExpansion interface{}
+
+// SidecarSetListerExpansion allows custom methods to be added to
+// SidecarSetLister.
+type SidecarSetListerExpansion interface{}
+
 // StatefulSetListerExpansion allows custom methods to be added to
 // StatefulSetLister.
 type StatefulSetListerExpansion interface{}

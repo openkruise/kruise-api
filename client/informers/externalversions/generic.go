@@ -19,7 +19,7 @@ limitations under the License.
 package externalversions
 
 import (
-	"fmt"
+	fmt "fmt"
 
 	v1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	v1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
@@ -91,6 +91,20 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1alpha1().WorkloadSpreads().Informer()}, nil
 
 		// Group=apps.kruise.io, Version=v1beta1
+	case v1beta1.SchemeGroupVersion.WithResource("advancedcronjobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().AdvancedCronJobs().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("broadcastjobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().BroadcastJobs().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("daemonsets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().DaemonSets().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("imagelistpulljobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().ImageListPullJobs().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("imagepulljobs"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().ImagePullJobs().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("nodeimages"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().NodeImages().Informer()}, nil
+	case v1beta1.SchemeGroupVersion.WithResource("sidecarsets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().SidecarSets().Informer()}, nil
 	case v1beta1.SchemeGroupVersion.WithResource("statefulsets"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Apps().V1beta1().StatefulSets().Informer()}, nil
 

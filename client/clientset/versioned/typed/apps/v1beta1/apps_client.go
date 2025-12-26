@@ -19,21 +19,56 @@ limitations under the License.
 package v1beta1
 
 import (
-	"net/http"
+	http "net/http"
 
-	v1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
-	"github.com/openkruise/kruise-api/client/clientset/versioned/scheme"
+	appsv1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
+	scheme "github.com/openkruise/kruise-api/client/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
 type AppsV1beta1Interface interface {
 	RESTClient() rest.Interface
+	AdvancedCronJobsGetter
+	BroadcastJobsGetter
+	DaemonSetsGetter
+	ImageListPullJobsGetter
+	ImagePullJobsGetter
+	NodeImagesGetter
+	SidecarSetsGetter
 	StatefulSetsGetter
 }
 
 // AppsV1beta1Client is used to interact with features provided by the apps.kruise.io group.
 type AppsV1beta1Client struct {
 	restClient rest.Interface
+}
+
+func (c *AppsV1beta1Client) AdvancedCronJobs(namespace string) AdvancedCronJobInterface {
+	return newAdvancedCronJobs(c, namespace)
+}
+
+func (c *AppsV1beta1Client) BroadcastJobs(namespace string) BroadcastJobInterface {
+	return newBroadcastJobs(c, namespace)
+}
+
+func (c *AppsV1beta1Client) DaemonSets(namespace string) DaemonSetInterface {
+	return newDaemonSets(c, namespace)
+}
+
+func (c *AppsV1beta1Client) ImageListPullJobs(namespace string) ImageListPullJobInterface {
+	return newImageListPullJobs(c, namespace)
+}
+
+func (c *AppsV1beta1Client) ImagePullJobs(namespace string) ImagePullJobInterface {
+	return newImagePullJobs(c, namespace)
+}
+
+func (c *AppsV1beta1Client) NodeImages() NodeImageInterface {
+	return newNodeImages(c)
+}
+
+func (c *AppsV1beta1Client) SidecarSets() SidecarSetInterface {
+	return newSidecarSets(c)
 }
 
 func (c *AppsV1beta1Client) StatefulSets(namespace string) StatefulSetInterface {
@@ -85,10 +120,10 @@ func New(c rest.Interface) *AppsV1beta1Client {
 }
 
 func setConfigDefaults(config *rest.Config) error {
-	gv := v1beta1.SchemeGroupVersion
+	gv := appsv1beta1.SchemeGroupVersion
 	config.GroupVersion = &gv
 	config.APIPath = "/apis"
-	config.NegotiatedSerializer = scheme.Codecs.WithoutConversion()
+	config.NegotiatedSerializer = rest.CodecFactoryForGeneratedClient(scheme.Scheme, scheme.Codecs).WithoutConversion()
 
 	if config.UserAgent == "" {
 		config.UserAgent = rest.DefaultKubernetesUserAgent()

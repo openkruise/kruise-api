@@ -19,13 +19,13 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
+	kruiseapiappsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
+	appsv1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // SidecarSets.
 type SidecarSetInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.SidecarSetLister
+	Lister() appsv1alpha1.SidecarSetLister
 }
 
 type sidecarSetInformer struct {
@@ -70,7 +70,7 @@ func NewFilteredSidecarSetInformer(client versioned.Interface, resyncPeriod time
 				return client.AppsV1alpha1().SidecarSets().Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.SidecarSet{},
+		&kruiseapiappsv1alpha1.SidecarSet{},
 		resyncPeriod,
 		indexers,
 	)
@@ -81,9 +81,9 @@ func (f *sidecarSetInformer) defaultInformer(client versioned.Interface, resyncP
 }
 
 func (f *sidecarSetInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.SidecarSet{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1alpha1.SidecarSet{}, f.defaultInformer)
 }
 
-func (f *sidecarSetInformer) Lister() v1alpha1.SidecarSetLister {
-	return v1alpha1.NewSidecarSetLister(f.Informer().GetIndexer())
+func (f *sidecarSetInformer) Lister() appsv1alpha1.SidecarSetLister {
+	return appsv1alpha1.NewSidecarSetLister(f.Informer().GetIndexer())
 }

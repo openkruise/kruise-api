@@ -19,13 +19,13 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
+	kruiseapiappsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
+	appsv1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // ContainerRecreateRequests.
 type ContainerRecreateRequestInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.ContainerRecreateRequestLister
+	Lister() appsv1alpha1.ContainerRecreateRequestLister
 }
 
 type containerRecreateRequestInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredContainerRecreateRequestInformer(client versioned.Interface, nam
 				return client.AppsV1alpha1().ContainerRecreateRequests(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.ContainerRecreateRequest{},
+		&kruiseapiappsv1alpha1.ContainerRecreateRequest{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *containerRecreateRequestInformer) defaultInformer(client versioned.Inte
 }
 
 func (f *containerRecreateRequestInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.ContainerRecreateRequest{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1alpha1.ContainerRecreateRequest{}, f.defaultInformer)
 }
 
-func (f *containerRecreateRequestInformer) Lister() v1alpha1.ContainerRecreateRequestLister {
-	return v1alpha1.NewContainerRecreateRequestLister(f.Informer().GetIndexer())
+func (f *containerRecreateRequestInformer) Lister() appsv1alpha1.ContainerRecreateRequestLister {
+	return appsv1alpha1.NewContainerRecreateRequestLister(f.Informer().GetIndexer())
 }

@@ -19,13 +19,13 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
+	kruiseapiappsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
+	appsv1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // NodeImages.
 type NodeImageInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.NodeImageLister
+	Lister() appsv1alpha1.NodeImageLister
 }
 
 type nodeImageInformer struct {
@@ -70,7 +70,7 @@ func NewFilteredNodeImageInformer(client versioned.Interface, resyncPeriod time.
 				return client.AppsV1alpha1().NodeImages().Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.NodeImage{},
+		&kruiseapiappsv1alpha1.NodeImage{},
 		resyncPeriod,
 		indexers,
 	)
@@ -81,9 +81,9 @@ func (f *nodeImageInformer) defaultInformer(client versioned.Interface, resyncPe
 }
 
 func (f *nodeImageInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.NodeImage{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1alpha1.NodeImage{}, f.defaultInformer)
 }
 
-func (f *nodeImageInformer) Lister() v1alpha1.NodeImageLister {
-	return v1alpha1.NewNodeImageLister(f.Informer().GetIndexer())
+func (f *nodeImageInformer) Lister() appsv1alpha1.NodeImageLister {
+	return appsv1alpha1.NewNodeImageLister(f.Informer().GetIndexer())
 }

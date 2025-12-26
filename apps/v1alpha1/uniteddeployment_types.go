@@ -19,12 +19,13 @@ package v1alpha1
 import (
 	"time"
 
-	"github.com/openkruise/kruise-api/apps/v1beta1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/openkruise/kruise-api/apps/v1beta1"
 )
 
 // UpdateStrategyType is a string enumeration type that enumerates
@@ -48,6 +49,8 @@ const (
 	SubsetUpdated UnitedDeploymentConditionType = "SubsetUpdated"
 	// SubsetFailure is added to a UnitedDeployment when one of its subsets has failure during its own reconciling.
 	SubsetFailure UnitedDeploymentConditionType = "SubsetFailure"
+	// UnitedDeploymentUpdated means currentRevision is equal to updatedRevision.
+	UnitedDeploymentUpdated UnitedDeploymentConditionType = "UnitedDeploymentUpdated"
 )
 
 // UnitedDeploymentSpec defines the desired state of UnitedDeployment.
@@ -250,10 +253,17 @@ type AdaptiveUnitedDeploymentStrategy struct {
 	// +optional
 	RescheduleCriticalSeconds *int32 `json:"rescheduleCriticalSeconds,omitempty"`
 
-	// UnschedulableLastSeconds is used to set the number of seconds for a Subset to recover from an unschedulable state,
+	// UnschedulableDuration is used to set the number of seconds for a Subset to recover from an unschedulable state,
 	// with a default value of 300 seconds.
 	// +optional
-	UnschedulableLastSeconds *int32 `json:"unschedulableLastSeconds,omitempty"`
+	UnschedulableDuration *int32 `json:"unschedulableDuration,omitempty"`
+
+	// ReserveUnschedulablePods indicates whether to enable reservation rescheduling mode, which is disabled by default.
+	// If this feature is enabled, those pending pods that would otherwise be permanently transferred to other subsets
+	// due to scheduling failure will be retained, and a temporary substitute Pod will be created in another subset to take over its work.
+	// When the retained pod is successfully scheduled and ready, its temporary substitute will be deleted.
+	// +optional
+	ReserveUnschedulablePods bool `json:"reserveUnschedulablePods,omitempty"`
 }
 
 // UnitedDeploymentScheduleStrategy defines the schedule performance of UnitedDeployment.
@@ -272,6 +282,10 @@ func (s *UnitedDeploymentScheduleStrategy) IsAdaptive() bool {
 	return s.Type == AdaptiveUnitedDeploymentScheduleStrategyType
 }
 
+func (s *UnitedDeploymentScheduleStrategy) ShouldReserveUnschedulablePods() bool {
+	return s.IsAdaptive() && s.Adaptive != nil && s.Adaptive.ReserveUnschedulablePods
+}
+
 func (s *UnitedDeploymentScheduleStrategy) GetRescheduleCriticalDuration() time.Duration {
 	if s.Adaptive == nil || s.Adaptive.RescheduleCriticalSeconds == nil {
 		return DefaultRescheduleCriticalDuration
@@ -279,11 +293,11 @@ func (s *UnitedDeploymentScheduleStrategy) GetRescheduleCriticalDuration() time.
 	return time.Duration(*s.Adaptive.RescheduleCriticalSeconds) * time.Second
 }
 
-func (s *UnitedDeploymentScheduleStrategy) GetUnschedulableLastDuration() time.Duration {
-	if s.Adaptive == nil || s.Adaptive.UnschedulableLastSeconds == nil {
+func (s *UnitedDeploymentScheduleStrategy) GetUnschedulableDuration() time.Duration {
+	if s.Adaptive == nil || s.Adaptive.UnschedulableDuration == nil {
 		return DefaultUnschedulableStatusLastDuration
 	}
-	return time.Duration(*s.Adaptive.UnschedulableLastSeconds) * time.Second
+	return time.Duration(*s.Adaptive.UnschedulableDuration) * time.Second
 }
 
 // UnitedDeploymentStatus defines the observed state of UnitedDeployment.
@@ -302,6 +316,9 @@ type UnitedDeploymentStatus struct {
 
 	// The number of pods in current version.
 	UpdatedReplicas int32 `json:"updatedReplicas"`
+
+	// The number of reserved pods in temporary adaptive strategy.
+	ReservedPods int32 `json:"reservedPods,omitempty"`
 
 	// The number of ready current revision replicas for this UnitedDeployment.
 	// +optional
@@ -343,14 +360,6 @@ func (s *UnitedDeploymentStatus) GetSubsetStatus(subset string) *UnitedDeploymen
 	return nil
 }
 
-func (u *UnitedDeployment) InitSubsetStatuses() {
-	for _, subset := range u.Spec.Topology.Subsets {
-		if u.Status.GetSubsetStatus(subset.Name) == nil {
-			u.Status.SubsetStatuses = append(u.Status.SubsetStatuses, UnitedDeploymentSubsetStatus{Name: subset.Name})
-		}
-	}
-}
-
 // UnitedDeploymentCondition describes current state of a UnitedDeployment.
 type UnitedDeploymentCondition struct {
 	// Type of in place set condition.
@@ -383,10 +392,14 @@ type UpdateStatus struct {
 type UnitedDeploymentSubsetStatus struct {
 	// Subset name specified in Topology.Subsets
 	Name string `json:"name,omitempty"`
-	// Recores the current replicas. Currently unused.
+	// Records the current replicas. Currently unused.
 	Replicas int32 `json:"replicas,omitempty"`
+	// Records the current ready replicas. Currently unused.
+	ReadyReplicas int32 `json:"readyReplicas,omitempty"`
 	// Records the current partition. Currently unused.
 	Partition int32 `json:"partition,omitempty"`
+	// Records the reserved pods in the subset.
+	ReservedPods int32 `json:"reservedPods,omitempty"`
 	// Conditions is an array of current observed subset conditions.
 	Conditions []UnitedDeploymentSubsetCondition `json:"conditions,omitempty"`
 }

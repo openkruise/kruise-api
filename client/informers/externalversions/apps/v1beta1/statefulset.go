@@ -19,13 +19,13 @@ limitations under the License.
 package v1beta1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
+	kruiseapiappsv1beta1 "github.com/openkruise/kruise-api/apps/v1beta1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1beta1 "github.com/openkruise/kruise-api/client/listers/apps/v1beta1"
+	appsv1beta1 "github.com/openkruise/kruise-api/client/listers/apps/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // StatefulSets.
 type StatefulSetInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1beta1.StatefulSetLister
+	Lister() appsv1beta1.StatefulSetLister
 }
 
 type statefulSetInformer struct {
@@ -71,7 +71,7 @@ func NewFilteredStatefulSetInformer(client versioned.Interface, namespace string
 				return client.AppsV1beta1().StatefulSets(namespace).Watch(context.TODO(), options)
 			},
 		},
-		&appsv1beta1.StatefulSet{},
+		&kruiseapiappsv1beta1.StatefulSet{},
 		resyncPeriod,
 		indexers,
 	)
@@ -82,9 +82,9 @@ func (f *statefulSetInformer) defaultInformer(client versioned.Interface, resync
 }
 
 func (f *statefulSetInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1beta1.StatefulSet{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1beta1.StatefulSet{}, f.defaultInformer)
 }
 
-func (f *statefulSetInformer) Lister() v1beta1.StatefulSetLister {
-	return v1beta1.NewStatefulSetLister(f.Informer().GetIndexer())
+func (f *statefulSetInformer) Lister() appsv1beta1.StatefulSetLister {
+	return appsv1beta1.NewStatefulSetLister(f.Informer().GetIndexer())
 }

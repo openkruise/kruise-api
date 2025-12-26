@@ -19,7 +19,7 @@ import (
 	"github.com/openkruise/kruise-api/pkg/kruise"
 )
 
-var K8SVersions = []int{18, 21, 24}
+var K8SVersions = []int{24, 26, 28, 30, 32}
 
 type xKubernetesGroupVersionKind struct {
 	Group   string `json:"group"`

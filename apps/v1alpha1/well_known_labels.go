@@ -4,6 +4,9 @@ const (
 	// ControllerRevisionHashLabelKey is used to record the controller revision of current resource.
 	ControllerRevisionHashLabelKey = "apps.kruise.io/controller-revision-hash"
 
+	// ReservedPodLabelKey is used to mark the reserved pods.
+	ReservedPodLabelKey = "apps.kruise.io/united-deployment-reserved-pod"
+
 	// SubSetNameLabelKey is used to record the name of current subset.
 	SubSetNameLabelKey = "apps.kruise.io/subset-name"
 
@@ -29,4 +32,7 @@ const (
 	// using in-place update strategy to kill sidecar. This image must be given if you want to use in-place update
 	// strategy to terminate sidecar containers.
 	KruiseTerminateSidecarWithImageEnv = "KRUISE_TERMINATE_SIDECAR_WHEN_JOB_EXIT_WITH_IMAGE"
+
+	// KruiseIgnoreContainerExitCodeEnv is an env name, which represents a switch to ignore the exit code of sidecar container.
+	KruiseIgnoreContainerExitCodeEnv = "KRUISE_TERMINATE_SIDECAR_IGNORE_EXIT_CODE"
 )

@@ -19,13 +19,13 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
+	kruiseapiappsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
+	appsv1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // NodePodProbes.
 type NodePodProbeInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.NodePodProbeLister
+	Lister() appsv1alpha1.NodePodProbeLister
 }
 
 type nodePodProbeInformer struct {
@@ -70,7 +70,7 @@ func NewFilteredNodePodProbeInformer(client versioned.Interface, resyncPeriod ti
 				return client.AppsV1alpha1().NodePodProbes().Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.NodePodProbe{},
+		&kruiseapiappsv1alpha1.NodePodProbe{},
 		resyncPeriod,
 		indexers,
 	)
@@ -81,9 +81,9 @@ func (f *nodePodProbeInformer) defaultInformer(client versioned.Interface, resyn
 }
 
 func (f *nodePodProbeInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.NodePodProbe{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1alpha1.NodePodProbe{}, f.defaultInformer)
 }
 
-func (f *nodePodProbeInformer) Lister() v1alpha1.NodePodProbeLister {
-	return v1alpha1.NewNodePodProbeLister(f.Informer().GetIndexer())
+func (f *nodePodProbeInformer) Lister() appsv1alpha1.NodePodProbeLister {
+	return appsv1alpha1.NewNodePodProbeLister(f.Informer().GetIndexer())
 }

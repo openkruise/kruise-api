@@ -18,4 +18,18 @@ limitations under the License.
 
 package v1beta1
 
+type AdvancedCronJobExpansion interface{}
+
+type BroadcastJobExpansion interface{}
+
+type DaemonSetExpansion interface{}
+
+type ImageListPullJobExpansion interface{}
+
+type ImagePullJobExpansion interface{}
+
+type NodeImageExpansion interface{}
+
+type SidecarSetExpansion interface{}
+
 type StatefulSetExpansion interface{}

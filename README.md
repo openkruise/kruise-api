@@ -24,6 +24,10 @@ Bugfixes in kruise-api will result in the patch version (third digit `z`) changi
 Code changes are made in that location, merged into `openkruise/kruise` and later synced here.
 
 
+```
+bash hack/sync_api.sh
+```
+
 ### How to get it
 
 To get the latest version, use go1.16+ and fetch using the `go get` command. For example:
@@ -35,7 +39,7 @@ go get github.com/openkruise/kruise-api@latest
 To get a specific version, use go1.11+ and fetch the desired version using the `go get` command. For example:
 
 ```
-go get github.com/openkruise/kruise-api@v1.6.0
+go get github.com/openkruise/kruise-api@v1.8.0
 ```
 
 ### How to use it

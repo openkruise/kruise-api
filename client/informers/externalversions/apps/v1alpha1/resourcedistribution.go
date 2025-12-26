@@ -19,13 +19,13 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
+	context "context"
 	time "time"
 
-	appsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
+	kruiseapiappsv1alpha1 "github.com/openkruise/kruise-api/apps/v1alpha1"
 	versioned "github.com/openkruise/kruise-api/client/clientset/versioned"
 	internalinterfaces "github.com/openkruise/kruise-api/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
+	appsv1alpha1 "github.com/openkruise/kruise-api/client/listers/apps/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -36,7 +36,7 @@ import (
 // ResourceDistributions.
 type ResourceDistributionInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.ResourceDistributionLister
+	Lister() appsv1alpha1.ResourceDistributionLister
 }
 
 type resourceDistributionInformer struct {
@@ -70,7 +70,7 @@ func NewFilteredResourceDistributionInformer(client versioned.Interface, resyncP
 				return client.AppsV1alpha1().ResourceDistributions().Watch(context.TODO(), options)
 			},
 		},
-		&appsv1alpha1.ResourceDistribution{},
+		&kruiseapiappsv1alpha1.ResourceDistribution{},
 		resyncPeriod,
 		indexers,
 	)
@@ -81,9 +81,9 @@ func (f *resourceDistributionInformer) defaultInformer(client versioned.Interfac
 }
 
 func (f *resourceDistributionInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1alpha1.ResourceDistribution{}, f.defaultInformer)
+	return f.factory.InformerFor(&kruiseapiappsv1alpha1.ResourceDistribution{}, f.defaultInformer)
 }
 
-func (f *resourceDistributionInformer) Lister() v1alpha1.ResourceDistributionLister {
-	return v1alpha1.NewResourceDistributionLister(f.Informer().GetIndexer())
+func (f *resourceDistributionInformer) Lister() appsv1alpha1.ResourceDistributionLister {
+	return appsv1alpha1.NewResourceDistributionLister(f.Informer().GetIndexer())
 }
